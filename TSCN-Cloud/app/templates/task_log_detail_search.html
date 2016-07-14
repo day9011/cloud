@@ -1,0 +1,618 @@
+        <link type="text/css" rel="stylesheet" href="/static/css/jquery.dataTables.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/materialize.css"/>
+        <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/jquery.datetimepicker.css" />
+        <div style="width:100%;height:45px;">
+            <a id="openSearchModal" class="modal-trigger waves-effect waves-light btn" style="padding:0px 10px;text-align:center;background-color:#319BE6;width:80px;height:30px;line-height:30px;float:right;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">search</i>筛选</a>
+        </div>
+    	<div id="task_log_table" class="display" cellspacing="0" width="100%">
+            <!--部分信息表格-->
+    		<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+    			<thead>
+    				<tr>
+    					<th>项目</th>
+    					<th>链接</th>
+                        <th>文件大小</th>
+    					<th>任务状态</th>
+                        <th>开始时间</th>
+    					<th>结束时间</th>
+    				</tr>
+    			</thead>
+    		</table>
+    	</div>
+
+        <div id="modal1" class="modal" style="width:40%;top:25%;">
+            <div class="modal-content">
+                <h4>筛选条件</h4>
+                <div class="slice"></div>
+                <div>
+                    <ul class="shop_list" style="margin-left:2%">
+                        <li class="list">
+                            <label class="shop_list_tit">项目名:</label>
+                            <div class="shop_ui_block ui_block_75 shop_list_con" style='width:100%'>
+                                <input id="Select_programName" style="width:160px;" />
+                            </div>
+                        </li>
+
+                        <li class="list">
+                            <label class="shop_list_tit">文件名:</label>
+                            <div class="shop_ui_block ui_block_75 shop_list_con" style='width:100%'>
+                                <input id="Select_fileName" style="width:160px;" />
+                            </div>
+                        </li>
+
+                        <li class="list">
+                            <label class="shop_list_tit" style="line-height:34px">状态:</label>
+                            <div class="shop_ui_block ui_block_75 shop_list_con" style='width:100%'>
+                                <select id="Select_fileStatus" style="width:164px;height:35px;" class="ui_form_select select_native_s select_native_net">
+                                    <option>--请选择--</option>
+                                    <option data-status="0">进行中</option>
+                                    <option data-status="1">成功</option>
+                                    <option data-status="2">失败</option>
+                                    <option data-status="3">忽略</option>
+                                </select>
+                            </div>
+                        </li>
+
+                        <li class="list">
+                            <label class="shop_list_tit">开始时间:</label>
+                            <div class="input-append date shop_ui_block ui_block_75 shop_list_con" style='width:100%'>
+                                <input id="datetimepicker" style="width:160px;"/>
+                            </div>
+                        </li>
+
+                        <li class="list">
+                            <label class="shop_list_tit">链接:</label>
+                            <div class="shop_ui_block ui_block_75 shop_list_con" style='width:100%'>
+                                <textarea id="Select_fileLink" rows="10" cols="40" style="width:320px;height:80px;"></textarea>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="slice"></div>
+            <div class="modal-footer">
+                <a id="cancelForSelected" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+                <a id="sureForselected" class="modal-action modal-close waves-effect waves-green btn-flat">确定</a>
+            </div>
+        </div>
+
+        <div id="modal3" class="modal bottom-sheet">
+            <table cellpadding="0" cellspacing="0" border="0" class="display" id="example1" style="margin-top:8px;width:2000px">
+                <thead>
+                    <tr>
+                        <th rowspan="2">项目</th>
+                        <th rowspan="2">链接</th>
+                        <th rowspan="2">文件大小</th>
+                        <th rowspan="2">状态</th>
+                        <th rowspan="2">开始时间</th>
+                        <th rowspan="2">结束时间</th>
+                        <th rowspan="2">耗时</th>
+                        <th rowspan="2">任务ID</th>
+                        <th class="center" colspan="5">状态详情</th>
+                    </tr>
+                    <tr>
+                        <th>状态</th>
+                        <!-- <th>重试次数</th> -->
+                        <th>任务描述</th>
+                        <th>任务开始时间</th>
+                        <th>任务结束时间</th>
+                    </tr>
+                </thead>
+            </table>
+            <!--总信息表格-->
+            <table id="vertical_table" class="display dataTable no-footer" style="margin-top:6%;width:96%;border-bottom:1px solid #DDDDDD">
+                <tr role="row" class="odd"><td colspan="2">项目</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">链接</td><td></td></tr>
+                <tr role="row" class="odd"><td colspan="2">文件大小</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">状态</td><td></td></tr>
+                <tr role="row" class="odd"><td colspan="2">开始时间</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">结束时间</td><td></td></tr>
+                <tr role="row" class="odd"><td colspan="2">耗时</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">任务ID</td><td></td></tr>
+            </table>
+            <!--详细信息表格-->
+            <table class="display dataTable no-footer" style="margin-top:1%;width:96%;border-bottom:1px solid #DDDDDD" id="tasklog_detail_table">
+                <tr role="row" class="odd">
+                    <td></td>
+                    <td>重试次数</td>
+                    <td>任务描述</td>
+                    <td>任务开始时间</td>
+                    <td>任务结束时间</td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>未开始</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="odd">
+                    <td>排队中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>传输中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="odd">
+                    <td>推送中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>分发中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="odd">
+                    <td>强刷中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>成功/失败</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <input id="showTip" class="center" style="color:red;display:none;border:none;width:90%;" type="text" value="" />
+        </div>
+        <div class="dataTables_length" id="example_length" style="margin-top:-12px;margin-left:10px;display:none;">
+            <label>显示 
+                <select id="tasklog_page_length" name="example_length" aria-controls="example" style="width:60px;height:25px">
+                    <option value="10">10</option>
+                    <option selected="selected" value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 
+            条</label>
+        </div>
+        <div>
+            共 <label id="searchNum" style="color:#000;"></label> 条数据
+        </div>
+
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+                if(window.parent.window.document.getElementById("loading_container")) {
+                    window.parent.window.document.getElementById("loading_container").style.display = "none";
+                }
+                $('#modal1').openModal();
+
+                $('#datetimepicker').datetimepicker({
+                    lang:'ch',
+                    timepicker:false,
+                    format:'Y-m-d',
+                    formatDate:'Y-m-d'
+                });
+
+                $("#openSearchModal").on("click", function() {
+                    $('#modal1').openModal();
+                });
+                
+                $("#cancelForSelected").on("click", function() {
+                    $('#modal1').closeModal();
+                });
+
+                $("#sureForselected").on("click", function() {
+                    var Select_programName = $("#Select_programName").val();
+                    var Select_fileName = $("#Select_fileName").val();
+                    var Select_fileStatus = $("#Select_fileStatus option").eq(document.getElementById("Select_fileStatus").selectedIndex).attr("data-status");
+                    var Select_fileLink = $("#Select_fileLink").val();
+                    var start_time = $("#datetimepicker").val();
+                    get_Table_Data(Select_programName, Select_fileName, Select_fileStatus, Select_fileLink, start_time);
+                    setTimeout(function() {
+                        init();
+                    },1000);
+                    create_table(orderData);
+                    clickstatus = '';
+                    $("#example_next").removeClass("disabled");
+                    $("#example_previous").removeClass("disabled");
+                    $("#example_next").on("click",function() {
+                        pre_get_data("add");
+                    });
+                    $("#example_previous").on("click",function() {
+                        if(parseInt($("#example_info").text().split(" ")[7]) != $("#tasklog_page_length").text()) {
+                            pre_get_data("del");
+                        }
+                    });
+                });
+
+                // $("#example thead tr th").on("click", function() {
+                //     create_table(orderData);
+                //     clickstatus = '';
+                //     setTimeout(function() {
+                //         $("#example_next").removeClass("disabled");
+                //         $("#example_previous").removeClass("disabled");
+                //         $("#example_next").on("click",function() {
+                //             pre_get_data("add");
+                //         });
+                //         $("#example_previous").on("click",function() {
+                //             if(parseInt($("#example_info").text().split(" ")[7]) != $("#tasklog_page_length").text()) {
+                //                 pre_get_data("del");
+                //             }
+                //         });
+                //     },10);
+                // });
+			});
+            function init() {
+                init_Table_Func();
+                $("#example_next").removeClass("disabled");
+                $("#example_previous").removeClass("disabled");
+                $("#example_paginate").click(function() {
+                    init_Table_Func();
+                });
+                $("#close_tasklog_detail").on("click",function() {
+                    $('#modal3').closeModal();
+                });
+                $("#tasklog_page_length").on("change",function() {
+                    var table = $('#example').DataTable();
+                    table.page.len($(this).val()).draw();
+                    init_Table_Func();
+                    init();
+                });
+                $("#example_next").on("click",function() {
+                    pre_get_data("add");
+                });
+                $("#example_previous").on("click",function() {
+                    if(parseInt($("#example_info").text().split(" ")[7]) != $("#tasklog_page_length").text()) {
+                        pre_get_data("del");
+                    }
+                });
+            }
+            var orderData;
+            function get_Table_Data(programName, fileName, fileStatus, fileLink, start_time) {
+                if(window.parent.window.document.getElementById("loading_container")) {
+                    window.parent.window.document.getElementById("loading_container").style.display = "block";
+                }
+
+                var post_data = {
+                    programName: programName,
+                    fileName: fileName,
+                    fileStatus: fileStatus,
+                    fileLink: fileLink,
+                    start_time: start_time,
+                    size: 20
+                }
+
+                console.log(post_data);
+
+                $.ajax({
+                    type: "HTTP",
+                    method: "POST",
+                    data: post_data,
+                    url: "/searchdetaillist",
+                    success: function(data){
+                        for(var i = 0; i < data['hits']['hits'].length; i++) {
+                            // data['hits']['hits'][i]['_source'].concat(data['hits']['hits'][i]['inner_hits']['task_id']['hits']['hits'][0]['_source']);
+                            data['hits']['hits'][i]['_source'] = $.extend({}, data['hits']['hits'][i]['_source'],data['hits']['hits'][i]['inner_hits']['task_id']['hits']['hits'][0]['_source']);
+                        }
+                        orderData = data['hits'];
+                        $("#searchNum").text(orderData['total']);
+                        create_table(orderData);
+                        if(window.parent.window.document.getElementById("loading_container")) {
+                            window.parent.window.document.getElementById("loading_container").style.display = "none";
+                        }
+                    },
+                    error: function() {
+                        alert("Error!");
+                    }
+                });
+            }
+            function create_table(data) {
+                $("#example").dataTable().fnDestroy();
+                $("#example1").dataTable().fnDestroy();
+                var search_final_data = [];
+                if(!data) {
+                    return;
+                }
+                var final_data = data['hits'];
+                var or_final_data = jQuery.extend(true, {}, data).content?jQuery.extend(true, {}, data).content:jQuery.extend(true, {}, data).hits;
+                for(var i = 0; i < final_data.length; i++) {
+                    if(!final_data[i]['_source']['status']) {
+                        final_data[i]['_source'].status = '';
+                    }
+                    if(!final_data[i]['_source']['cost_time']) {
+                        final_data[i]['_source'].cost_time = '';
+                    }
+                    if(!final_data[i]['_source']['comment']) {
+                        final_data[i]['_source'].comment = '';
+                    }
+
+                    final_data[i]['_source']['file_bytes'] = deal_file_size(final_data[i]['_source']['file_bytes']);
+                    // final_data[i]['_source']['status'] = deal_file_status(final_data[i]['_source']);
+
+                    search_final_data.push(final_data[i]['_source']);
+                }
+                final_data = search_final_data;
+                or_final_data = final_data;
+                
+
+                $('#example').dataTable({
+                    "data": final_data,
+                    "deferRender": true,
+                    "lengthChange": false,
+                    "retrieve": true,
+                    "destroy": true,
+                    "bPaginate" : true,
+                    "bProcessing" : true,
+                    "iDisplayLength":parseInt($("#tasklog_page_length").val()),
+                    "sPaginationType": "simple",
+                    "sInfo": false,
+                    "aaSorting": [ [4,'desc'] ],
+                    "columns": [
+                        { 
+                            "data": "project_name",
+                            "render": function(a,b,c) {
+                                return '<text class="task_id" value="'+c['task_id']+'">'+a+'</text>';
+                            }
+                        },
+                        { "data": "download_url" },
+                        { "data": "file_bytes" },
+                        { 
+                            "data": "status",
+                            "render": function(e,a,b) {
+                                if(e == 1) {
+                                    return '<b class="success fontAddBold" value="'+e+'">'+"成功"+'</b>';
+                                } else if(e == 2) {
+                                    return '<b class="failed fontAddBold" value="'+e+'">'+"失败"+'</b>';
+                                } else if(e == 3) {
+                                    return '<b class="ignore fontAddBold" value="'+e+'">'+"忽略"+'</b>';
+                                } else {
+                                    return '<b class="process fontAddBold" value="'+e+'">'+b.comment+'</b>';
+                                }
+                            }
+                        },
+                        { "data": "start_time" },
+                        { "data": "end_time" }
+                    ]
+                });
+
+                $('#example1').dataTable({
+                    "data": or_final_data,
+                    "lengthChange": false,
+                    "info": false,
+                    "paging": false,
+                    "ordering":false,
+                    "retrieve": true,
+                    "destroy": true,
+                    "columns": [
+                        { "data": "project_name" },
+                        { "data": "download_url" },
+                        { "data": "file_bytes" },
+                        { "data": "status" },
+                        { "data": "start_time" },
+                        { "data": "end_time" },
+                        { "data": "cost_time" },
+                        { "data": "task_id" },
+
+                        { "data": "status" },
+                        { "data": "comment" },
+                        { "data": "start_time" },
+                        { "data": "end_time" }
+                    ]
+                });
+                $("#example_filter").hide();
+                $(".dataTables_info").hide();
+                init_Table_Func();
+            }
+
+            var limit_start_index = 1;
+            var limit_end_index = 20;
+            function pre_get_data(flag) {
+                if(window.parent.window.document.getElementById("loading_container")) {
+                    window.parent.window.document.getElementById("loading_container").style.display = "block";
+                }
+                var Select_programName = $("#Select_programName").val();
+                var Select_fileName = $("#Select_fileName").val();
+                var Select_fileStatus = $("#Select_fileStatus option").eq(document.getElementById("Select_fileStatus").selectedIndex).attr("data-status");
+                var Select_fileLink = $("#Select_fileLink").val();
+                var start_time = $("#datetimepicker").val();
+
+                
+                if(flag=="add") {
+                    limit_start_index = limit_end_index + 1;
+                    limit_end_index = limit_end_index + 20;
+                    console.log("limit_start_index=="+limit_start_index+",limit_end_index=="+limit_end_index);
+                } else {
+                    limit_start_index = limit_start_index - 20;
+                    limit_end_index = limit_start_index + 19;
+                    if(limit_start_index < 0) {
+                        limit_start_index = 1;
+                        limit_end_index = 20;
+                    }
+                    console.log("limit_start_index=="+limit_start_index+",limit_end_index=="+limit_end_index);
+                }
+
+                var self = this;
+                var post_data = {
+                    programName: Select_programName,
+                    fileName: Select_fileName,
+                    fileStatus: Select_fileStatus,
+                    fileLink: Select_fileLink,
+                    start_time: start_time,
+                    from: limit_start_index,
+                    size: parseInt($("#tasklog_page_length").val())
+                }
+
+                console.log(post_data);
+
+                $.ajax({
+                    type: "HTTP",
+                    method: "POST",
+                    data: post_data,
+                    url: "/searchdetaillist",
+                    success: function(data){
+                        for(var i = 0; i < data['hits']['hits'].length; i++) {
+                            data['hits']['hits'][i]['_source'] = $.extend({}, data['hits']['hits'][i]['_source'],data['hits']['hits'][i]['inner_hits']['task_id']['hits']['hits'][0]['_source']);
+                        }
+                        orderData = data['hits'];
+                        $("#searchNum").text(orderData['total']);
+                        create_table(orderData);
+                        init();
+                        if(window.parent.window.document.getElementById("loading_container")) {
+                            window.parent.window.document.getElementById("loading_container").style.display = "none";
+                        }
+                    },
+                    error: function() {
+                        alert("Error!");
+                    }
+                });
+
+            }
+            function init_Table_Func() {
+                $("td").addClass("center");
+                $("th").addClass("center");
+                $("#example tbody tr").on("click",function() {
+                    if(window.parent.$("#dropdown_content").css("display") == "block") {
+                        window.parent.$(".dropdown-button").trigger("click");
+                    }
+                    $('#modal3').openModal();
+                    $("#example1_filter").hide();
+                    var table = $('#example1').DataTable();
+                    table.search($(this).find(".task_id").attr("value")).draw();
+                    console.log($(this).find(".task_id").attr("value"));
+                    init_vertical_table($(this));
+                    init_detail_table();
+                    $("#example1").hide();
+                });
+            }
+            function search_task_log() {
+                var table = $('#example').DataTable();
+                table.search($("#search_task_log").val()).draw();
+                init_Table_Func();
+            }
+            function init_vertical_table(data) {
+                for(var i in $("#example1 tbody").find("td")) {
+                    if(i == 3) {
+                        $("#vertical_table td").eq(i*2+1).text(data.find("td").eq(3).text());
+                    } else {
+                        $("#vertical_table td").eq(i*2+1).text($("#example1 tbody").find("td").eq(i).text()); 
+                    }
+                }
+
+                var status_val = data.find("td").eq(3).find("b").attr("value");
+                $("#vertical_table tr").eq(3).find("td").eq(1).removeAttr("class");
+                $("#vertical_table tr").eq(3).find("td").eq(1).css("font-weight","bold");
+                if(status_val == 1) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("成功");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center success");
+                } else if(status_val == 2) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("失败");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center failed");
+                } else if(status_val == 3) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("忽略");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center ignore");
+                    $("#showTip").hide();
+                } else if(status_val === '') {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center missed");
+                } else if(status_val == 0) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("进行中");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center process");
+                }
+
+                if(data) {
+                    $("#vertical_table tr").eq(5).find("td").eq(1).text(data.end_time);
+                    $("#vertical_table tr").eq(6).find("td").eq(1).text(data.cost_time);
+                }
+                $("#vertical_table td").eq(3)[0].innerHTML = '<a target="_blank" href='+$("#vertical_table td").eq(3).text()+'>'+$("#vertical_table td").eq(3).text()+'</a>'
+            }
+            function init_detail_table() {
+                var taskid = $("#vertical_table tr").eq(7).find("td").eq(1).text();
+                var taskstatus = reback_deal_file_status($("#vertical_table tr").eq(3).find("td").eq(1));
+                $.ajax({
+                    type: "HTTP",
+                    method: "GET",
+                    url: "/detail" + "/" + taskid + "/" + taskstatus,
+                    success: function(data){
+                        ori_detail_table();
+                        if(data.status == 1) {
+                            $("#tasklog_detail_table").hide();
+                            if(taskstatus != 3) {
+                                $("#showTip").show().val(data.content);
+                            }
+                        } else {
+                            $("#showTip").hide();
+                            $("#tasklog_detail_table").show();
+                            var index = 0;
+                            for(var i = 1; i < $("#tasklog_detail_table tr").length; i++) {
+                                if(i == 3 || i == 4 || i == 6) {
+                                    if(data.content.task_config[index]) {
+                                        $("#tasklog_detail_table tr").eq(i).find("td").eq(2).text(data.content.task_config[index].message);
+                                        $("#tasklog_detail_table tr").eq(i).find("td").eq(3).text(data.content.task_config[index].start_time);
+                                        $("#tasklog_detail_table tr").eq(i).find("td").eq(4).text(data.content.task_config[index].end_time);
+                                        index++;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    error: function(){
+                        alert("Something wrong!");
+                    }
+                })
+            }
+            function ori_detail_table() {
+                for(var i = 1; i < $("#tasklog_detail_table tr").length; i++) {
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(1).text("");
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(2).text("");
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(3).text("");
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(4).text("");
+                }
+            }
+            function deal_file_size(file_data) {
+                var data = parseInt(file_data);
+                var size = {"MB": 1024*1024, "KB": 1024, "GB": 1024*1024*1024};
+                if (data < 1024) {
+                    data = data + "B";
+                } else if (data >= size["GB"]) {
+                    data = (data/size["GB"]).toFixed(2) + "GB";
+                } else if (data >= size["MB"]) {
+                    data = (data/size["MB"]).toFixed(2) + "MB";
+                } else if (data >= size["KB"]) {
+                    data = (data/size["KB"]).toFixed(2) + "KB";
+                }
+                return data;
+            }
+            function deal_file_status(data) {
+                var task_status = '';
+                if (data['status'] == "0"){
+                    task_status = data['comment'];
+                } else if (data['status'] == "1"){
+                    task_status = '成功';
+                } else if (data['status'] == "2"){
+                    task_status = '失败';
+                } else if (data['status'] == "3"){
+                    task_status = '忽略';
+                }
+                return task_status;
+            }
+            function reback_deal_file_status(dom) {
+                if(dom.hasClass("process")){
+                    return 0;
+                } else if(dom.hasClass("success")) {
+                    return 1;
+                } else if(dom.hasClass("failed")) {
+                    return 2;
+                } else if(dom.hasClass("ignore")) {
+                    return 3;
+                }
+            }
+		</script>

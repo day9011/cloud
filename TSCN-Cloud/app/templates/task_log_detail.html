@@ -1,0 +1,479 @@
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+        <title>TaskLog</title>
+        <link type="text/css" rel="stylesheet" href="/static/css/jquery.dataTables.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/materialize.css"/>
+        <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
+    </head>
+    <body style="background-color:#FFFFFF;width:98%;margin-left:15px"> -->
+        <link type="text/css" rel="stylesheet" href="/static/css/jquery.dataTables.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/materialize.css"/>
+        <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
+        <div style="width:100%;height:45px;display:none;">
+            <span class="right" style="margin-top:20px">
+                <i class="material-icons" style="font-size:20px;color:grey;vertical-align:sub">search</i><input id="search_task_log" oninput="search_task_log();" style="margin-top:10px;width:200px" class="" placeholder="" aria-controls="example">
+            </span>
+        </div>
+    	<div id="task_log_table" class="display" cellspacing="0" width="100%">
+            <!--部分信息表格-->
+    		<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+    			<thead>
+    				<tr>
+    					<th>项目</th>
+    					<th>链接</th>
+                        <th>文件大小</th>
+    					<th>任务状态</th>
+                        <th>开始时间</th>
+    					<th>结束时间</th>
+    				</tr>
+    			</thead>
+    		</table>
+    	</div>
+
+        <div id="modal3" class="modal bottom-sheet">
+            <table cellpadding="0" cellspacing="0" border="0" class="display" id="example1" style="margin-top:8px;width:2000px">
+                <thead>
+                    <tr>
+                        <th rowspan="2">项目</th>
+                        <th rowspan="2">链接</th>
+                        <th rowspan="2">文件大小</th>
+                        <th rowspan="2">状态</th>
+                        <th rowspan="2">开始时间</th>
+                        <th rowspan="2">结束时间</th>
+                        <th rowspan="2">耗时</th>
+                        <th rowspan="2">任务ID</th>
+                        <th class="center" colspan="5">状态详情</th>
+                    </tr>
+                    <tr>
+                        <th>状态</th>
+                        <!-- <th>重试次数</th> -->
+                        <th>任务描述</th>
+                        <th>任务开始时间</th>
+                        <th>任务结束时间</th>
+                    </tr>
+                </thead>
+            </table>
+            <!--总信息表格-->
+            <table id="vertical_table" class="display dataTable no-footer" style="margin-top:6%;width:96%;border-bottom:1px solid #DDDDDD">
+                <tr role="row" class="odd"><td colspan="2">项目</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">链接</td><td></td></tr>
+                <tr role="row" class="odd"><td colspan="2">文件大小</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">状态</td><td></td></tr>
+                <tr role="row" class="odd"><td colspan="2">开始时间</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">结束时间</td><td></td></tr>
+                <tr role="row" class="odd"><td colspan="2">耗时</td><td></td></tr>
+                <tr role="row" class="even"><td colspan="2">任务ID</td><td></td></tr>
+                <!-- <tr>
+                    <td rowspan="6">状<br>态<br>详<br>情</td>
+                    <tr role="row" class="odd"><td>任务描述</td><td></td></tr>
+                    <tr role="row" class="even"><td>任务开始时间</td><td></td></tr>
+                    <tr role="row" class="odd"><td>任务结束时间</td><td></td></tr>
+                </tr> -->
+            </table>
+            <!--详细信息表格-->
+            <table class="display dataTable no-footer" style="margin-top:1%;width:96%;border-bottom:1px solid #DDDDDD" id="tasklog_detail_table">
+                <tr role="row" class="odd">
+                    <td></td>
+                    <td>重试次数</td>
+                    <td>任务描述</td>
+                    <td>任务开始时间</td>
+                    <td>任务结束时间</td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>未开始</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="odd">
+                    <td>排队中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>传输中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="odd">
+                    <td>推送中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>分发中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="odd">
+                    <td>强刷中</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr role="row" class="even">
+                    <td>成功/失败</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <input id="showTip" class="center" style="color:red;display:none;border:none;width:90%;" type="text" value="" />
+        </div>
+        <div class="dataTables_length" id="example_length" style="margin-top:-12px;margin-left:10px;">
+            <label>显示 
+                <select id="tasklog_page_length" name="example_length" aria-controls="example" style="width:60px;height:25px">
+                    <option value="10">10</option>
+                    <option selected="selected" value="20">15</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 
+            条</label>
+        </div>
+
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+                get_Table_Data();
+                setTimeout(function() {
+                    init();
+                },1000);
+                $("#example thead tr th").on("click", function() {
+                    create_table(orderData);
+                    setTimeout(function() {
+                        $("#example_next").removeClass("disabled");
+                        $("#example_previous").removeClass("disabled");
+                        $("#example_next").on("click",function() {
+                            pre_get_data("add");
+                        });
+                        $("#example_previous").on("click",function() {
+                            if(parseInt($("#example_info").text().split(" ")[7]) != $("#tasklog_page_length").text()) {
+                                pre_get_data("del");
+                            }
+                        });
+                    },10);
+                });
+			});
+            function init() {
+                init_Table_Func();
+                $("#example_next").removeClass("disabled");
+                $("#example_previous").removeClass("disabled");
+                // $(".sorting_1").hide();
+                $("#example_paginate").click(function() {
+                    init_Table_Func();
+                });
+                $("#close_tasklog_detail").on("click",function() {
+                    $('#modal3').closeModal();
+                });
+                $("#tasklog_page_length").on("change",function() {
+                    var table = $('#example').DataTable();
+                    table.page.len($(this).val()).draw();
+                    init_Table_Func();
+                    init();
+                });
+                $("#example_next").on("click",function() {
+                    pre_get_data("add");
+                });
+                $("#example_previous").on("click",function() {
+                    if(parseInt($("#example_info").text().split(" ")[7]) != $("#tasklog_page_length").text()) {
+                        pre_get_data("del");
+                    }
+                });
+            }
+            var orderData;
+            function get_Table_Data(arg_limit_start,arg_limit_end) {
+                if(window.parent.window.document.getElementById("loading_container")) {
+                    window.parent.window.document.getElementById("loading_container").style.display = "block";
+                }
+                var limit_start = arg_limit_start?arg_limit_start:1;
+                var limit_end = arg_limit_end?arg_limit_end:25;
+                var post_data = {
+                    "query_start_time" : "2015-12-01 00:00:00",
+                    "query_end_time" : "2016-12-31 23:59:59",
+                    "limit_start": limit_start,
+                    "limit_end": limit_end
+                };
+                $.ajax({
+                    type: "HTTP",
+                    method: "POST",
+                    data: post_data,
+                    url: "/list",
+                    success: function(data){
+                        orderData = data;
+                        create_table(data);
+                        if(window.parent.window.document.getElementById("loading_container")) {
+                            window.parent.window.document.getElementById("loading_container").style.display = "none";
+                        }
+                    },
+                    error: function() {
+                        alert("Error!");
+                    }
+                });
+            }
+            function create_table(data) {
+                var final_data = data.content;
+                var or_final_data = jQuery.extend(true, {}, data).content;
+                for(var i = 0; i < final_data.length; i++) {
+                    final_data[i].file_bytes = deal_file_size(final_data[i].file_bytes);
+                    final_data[i].status = deal_file_status(final_data[i]);
+                }
+
+                $('#example').dataTable({
+                    "data": final_data,
+                    "deferRender": true,
+                    "lengthChange": false,
+                    "retrieve": true,
+                    "destroy": true,
+                    "bPaginate" : true,
+                    "bProcessing" : true,
+                    "iDisplayLength":parseInt($("#tasklog_page_length").val()),
+                    "sPaginationType": "simple",
+                    "sInfo": false,
+                    "aaSorting": [ [4,'desc'] ],
+                    "columns": [
+                        { 
+                            "data": "project_name",
+                            "render": function(a,b,c) {
+                                return '<text class="task_id" value="'+c['task_id']+'">'+a+'</text>';
+                            }
+                        },
+                        { "data": "download_url" },
+                        { "data": "file_bytes" },
+                        { 
+                            "data": "status",
+                            "render": function(e) {
+                                if(e == "成功") {
+                                    return '<b class="success fontAddBold" value="'+e+'">'+e+'</b>';
+                                } else if(e == "失败") {
+                                    return '<b class="failed fontAddBold" value="'+e+'">'+e+'</b>';
+                                } else if(e == "忽略") {
+                                    return '<b class="ignore fontAddBold" value="'+e+'">'+e+'</b>';
+                                } else {
+                                    return '<b class="process fontAddBold" value="'+e+'">'+e+'</b>';
+                                }
+                            }
+                        },
+                        { "data": "start_time" },
+                        { "data": "end_time" }
+                    ]
+                });
+
+                $('#example1').dataTable({
+                    "data": or_final_data,
+                    "lengthChange": false,
+                    "info": false,
+                    "paging": false,
+                    "ordering":false,
+                    "retrieve": true,
+                    "destroy": true,
+                    "columns": [
+                        { "data": "project_name" },
+                        { "data": "download_url" },
+                        { "data": "file_bytes" },
+                        { "data": "status" },
+                        { "data": "start_time" },
+                        { "data": "end_time" },
+                        { "data": "cost_time" },
+                        { "data": "task_id" },
+
+                        { "data": "status" },
+                        { "data": "comment" },
+                        { "data": "start_time" },
+                        { "data": "end_time" }
+                    ]
+                });
+                $("#example_filter").hide();
+                $(".dataTables_info").hide();
+                init_Table_Func();
+            }
+            function pre_get_data(flag) {
+                if(window.parent.window.document.getElementById("loading_container")) {
+                    window.parent.window.document.getElementById("loading_container").style.display = "block";
+                }
+                var limit_start_index = 1;
+                var limit_end_index = 25;
+                if(flag=="add") {
+                    limit_start_index = parseInt($("#example_info").text().split(" ")[7]);
+                    limit_end_index = limit_start_index + parseInt($("#tasklog_page_length").val());
+                    console.log("limit_start_index=="+limit_start_index+",limit_end_index=="+limit_end_index);
+                } else {
+                    limit_end_index = parseInt($("#example_info").text().split(" ")[7]) - parseInt($("#tasklog_page_length").val());
+                    limit_start_index = parseInt($("#example_info").text().split(" ")[7]) - parseInt($("#tasklog_page_length").val())*2+1;
+                    if(limit_start_index < 0) {
+                        limit_start_index = 1;
+                        limit_end_index = parseInt($("#tasklog_page_length").val());
+                    }
+                    console.log("limit_start_index=="+limit_start_index+",limit_end_index=="+limit_end_index);
+                }
+
+                var self = this;
+                var post_data = {
+                    "query_start_time" : "2015-12-01 00:00:00",
+                    "query_end_time" : "2016-12-31 23:59:59",
+                    "limit_start": limit_start_index,
+                    "limit_end": limit_end_index
+                };
+                $.ajax({
+                    type: "HTTP",
+                    method: "POST",
+                    data: post_data,
+                    url: "/list",
+                    success: function(data){
+                        $("#example").dataTable().fnDestroy();
+                        $("#example1").dataTable().fnDestroy();
+                        setTimeout(function() {
+                            create_table(data);
+                            init();
+                            if(window.parent.window.document.getElementById("loading_container")) {
+                                window.parent.window.document.getElementById("loading_container").style.display = "none";
+                            }
+                        },1000);
+                    }
+                });
+            }
+            function init_Table_Func() {
+                // $(".sorting_1").hide();
+                // $("#example th").eq(0).hide();
+                $("td").addClass("center");
+                $("th").addClass("center");
+                // $("#example thead tr th").unbind("click");
+                $("#example tbody tr").on("click",function() {
+                    if(window.parent.$("#dropdown_content").css("display") == "block") {
+                        window.parent.$(".dropdown-button").trigger("click");
+                    }
+                    $('#modal3').openModal();
+                    $("#example1_filter").hide();
+                    var table = $('#example1').DataTable();
+                    table.search($(this).find(".task_id").attr("value")).draw();
+                    console.log($(this).find(".task_id").attr("value"));
+                    init_vertical_table();
+                    init_detail_table();
+                    $("#example1").hide();
+                });
+            }
+            function search_task_log() {
+                var table = $('#example').DataTable();
+                table.search($("#search_task_log").val()).draw();
+                init_Table_Func();
+            }
+            function init_vertical_table() {
+                for(var i in $("#example1 tbody").find("td")) {
+                    $("#vertical_table td").eq(i*2+1).text($("#example1 tbody").find("td").eq(i).text());
+                }
+                var status_val = $("#vertical_table tr").eq(3).find("td").eq(1).text();
+                $("#vertical_table tr").eq(3).find("td").eq(1).removeAttr("class");
+                $("#vertical_table tr").eq(3).find("td").eq(1).css("font-weight","bold");
+                if(status_val == 1) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("成功");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center success");
+                } else if(status_val == 2) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("失败");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center failed");
+                } else if(status_val == 3) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("忽略");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center ignore");
+                    $("#showTip").hide();
+                } else if(status_val == 0) {
+                    $("#vertical_table tr").eq(3).find("td").eq(1).text("进行中");
+                    $("#vertical_table tr").eq(3).find("td").eq(1).addClass("center process");
+                }
+                $("#vertical_table td").eq(3)[0].innerHTML = '<a target="_blank" href='+$("#vertical_table td").eq(3).text()+'>'+$("#vertical_table td").eq(3).text()+'</a>'
+            }
+            function init_detail_table() {
+                var taskid = $("#vertical_table tr").eq(7).find("td").eq(1).text();
+                var taskstatus = reback_deal_file_status($("#vertical_table tr").eq(3).find("td").eq(1));
+                $.ajax({
+                    type: "HTTP",
+                    method: "GET",
+                    url: "/detail" + "/" + taskid + "/" + taskstatus,
+                    success: function(data){
+                        ori_detail_table();
+                        if(data.status == 1) {
+                            $("#tasklog_detail_table").hide();
+                            if(taskstatus != 3) {
+                                $("#showTip").show().val(data.content);
+                            }
+                        } else {
+                            $("#showTip").hide();
+                            $("#tasklog_detail_table").show();
+                            var index = 0;
+                            for(var i = 1; i < $("#tasklog_detail_table tr").length; i++) {
+                                if(i == 3 || i == 4 || i == 6) {
+                                    if(data.content.task_config[index]) {
+                                        $("#tasklog_detail_table tr").eq(i).find("td").eq(2).text(data.content.task_config[index].message);
+                                        $("#tasklog_detail_table tr").eq(i).find("td").eq(3).text(data.content.task_config[index].start_time);
+                                        $("#tasklog_detail_table tr").eq(i).find("td").eq(4).text(data.content.task_config[index].end_time);
+                                        index++;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    error: function(){
+                        alert("Something wrong!");
+                    }
+                })
+            }
+            function ori_detail_table() {
+                for(var i = 1; i < $("#tasklog_detail_table tr").length; i++) {
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(1).text("");
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(2).text("");
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(3).text("");
+                    $("#tasklog_detail_table tr").eq(i).find("td").eq(4).text("");
+                }
+            }
+            function deal_file_size(file_data) {
+                var data = parseInt(file_data);
+                var size = {"MB": 1024*1024, "KB": 1024, "GB": 1024*1024*1024};
+                if (data < 1024) {
+                    data = data + "B";
+                } else if (data >= size["GB"]) {
+                    data = (data/size["GB"]).toFixed(2) + "GB";
+                } else if (data >= size["MB"]) {
+                    data = (data/size["MB"]).toFixed(2) + "MB";
+                } else if (data >= size["KB"]) {
+                    data = (data/size["KB"]).toFixed(2) + "KB";
+                }
+                return data;
+            }
+            function deal_file_status(data) {
+                var task_status = '';
+                if (data.status == "0"){
+                    task_status = data.comment;
+                } else if (data.status == "1"){
+                    task_status = '成功';
+                } else if (data.status == "2"){
+                    task_status = '失败';
+                } else if (data.status == "3"){
+                    task_status = '忽略';
+                }
+                return task_status;
+            }
+            function reback_deal_file_status(dom) {
+                if(dom.hasClass("process")){
+                    return 0;
+                } else if(dom.hasClass("success")) {
+                    return 1;
+                } else if(dom.hasClass("failed")) {
+                    return 2;
+                } else if(dom.hasClass("ignore")) {
+                    return 3;
+                }
+            }
+		</script>
+   <!--  </body>
+</html> -->

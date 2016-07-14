@@ -1,0 +1,69 @@
+task_log_search: 10.77.34.89:5000
+task_log_detail: 10.77.34.89:5010
+getUserInfo: http://127.0.0.1:9997/fake
+getFlavor: http://127.0.0.1:9997/fake
+getList: http://127.0.0.1:9997/fake
+getImage: http://127.0.0.1:9997/fake
+getDomains: http://127.0.0.1:9997/fake_domains
+getServiceTypes: http://127.0.0.1:9997/fake_service
+getRoleList: http://127.0.0.1:9997/fake_role_list
+getRoleDetail: http://127.0.0.1:9997/fake_role_detail
+getIdcClur: http://127.0.0.1:9997/fake
+stopVm: http://127.0.0.1:9997/fake
+startVm: http://127.0.0.1:9997/fake
+deleteVm: http://127.0.0.1:9997/fake
+vm_query_detail: http://127.0.0.1:9997/fake
+deletejob: http://127.0.0.1:9997/fake
+stopjob: http://127.0.0.1:9997/fake
+startjob: http://127.0.0.1:9997/fake
+StoreCreateData: http://127.0.0.1:9997/fake
+vm_create: http://127.0.0.1:9997/fake
+get_public_ip: http://127.0.0.1:9997/fake
+getKeyList: http://127.0.0.1:9997/fake
+addKey: http://127.0.0.1:9997/fake
+detailSearch: http://127.0.0.1:9997/fake
+auth_url: http://127.0.0.1:9997/fake
+logout_url: http://127.0.0.1:9997/fake
+local: http://127.0.0.1:9997/fake
+
+q_vm_list: http://127.0.0.1:9997/fake
+q_vm_region: http://127.0.0.1:9997/fake
+q_vm_zone: http://127.0.0.1:9997/fake
+q_vm_image: http://127.0.0.1:9997/fake
+q_vm_key: http://127.0.0.1:9997/fake
+q_vm_securitygroup: http://127.0.0.1:9997/fake
+q_vm_bill: http://127.0.0.1:9997/fake
+q_vm_project: http://127.0.0.1:9997/fake
+q_vm_createproject: http://127.0.0.1:9997/fake
+q_vm_vpcex: http://127.0.0.1:9997/fake
+q_vm_price: http://127.0.0.1:9997/fake
+q_vm_pricehour: http://127.0.0.1:9997/fake
+q_vm_runinstance: http://127.0.0.1:9997/fake
+q_vm_runinstancehour: http://127.0.0.1:9997/fake
+q_vm_start: http://127.0.0.1:9997/fake
+q_vm_stop: http://127.0.0.1:9997/fake
+q_vm_restart: http://127.0.0.1:9997/fake
+q_vm_modifyname: http://127.0.0.1:9997/fake
+q_vm_modifyproject: http://127.0.0.1:9997/fake
+q_vm_importkeypair: http://127.0.0.1:9997/fake
+q_vm_setautorenew: http://127.0.0.1:9997/fake
+
+vcs_url: http://127.0.0.1:9997/fake/vcs
+
+mysql_host: 127.0.0.1
+mysql_port: 3306
+mysql_user: tops
+mysql_pass: tops
+mysql_db: tops
+
+redis_host: 127.0.0.1
+redis_pass: tops
+redis_port: 6379
+redis_db: 0
+
+status_ttl: 60
+
+monitor_interval: 30
+
+tag_server: 127.0.0.1
+tag_port: 5005

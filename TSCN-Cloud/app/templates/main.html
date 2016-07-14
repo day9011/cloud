@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+        <title>
+            TS CLOUD
+        </title>
+        <link type="text/css" rel="stylesheet" href="/static/css/materialize.css" media="screen,projection" />
+        <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
+    </head>
+    <body style="overflow:hidden;">
+        <div id="sideCover" style="display:none;position:absolute;z-index:999;width:100%;height:100%;background-color:#424242;opacity:0.6;"></div>
+
+        <div class="mainDiv">
+            <!-- Left -->
+            <div class="leftDiv side-nav fixed" style="background-color:#424242;z-index:1003;">
+                <!-- SideNavbar goes here -->
+                <!-- <div style="height:20%">
+                    <image class="cdn_logo" style="width:60%;margin-left:20%;margin-top:15%;" src="/static/images/cloud.png"></image>
+                </div> -->
+                <div style="height:140px">
+                    <a href="/">
+                        <h4 style="color:#ffffff;text-align:center;margin:0px;padding-top:10px;border-top-width:10px;font-family:cursive;">TS-Cloud</h4>
+                    </a>
+                    <div class="shop_list_con" style="padding:0px 0px;height:100%;">
+                        <i style="color:#319BE6;line-height:41px;height:41px;margin:0px;" class="material-icons left">location_on</i>
+                        <select id="q_region" class="ui_form_select select_native_s select_native_net" style="background-color:transparent;color:#319BE6;height:30px;vertical-align:10px;width:180px;">
+                            {% for region_info in regions %}
+                            <option region="{{ region_info.id }}">{{ region_info.detail }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="side-nav fixed" style="height:100%;top:120px;background-color:#424242;">
+                    <ul id="slide-out" style="margin-top:0;">
+                        <li style="padding:0 0;">
+                            <div class="collapsible-header">
+                                <i class="material-icons" style="line-height:45px;color:grey">dashboard</i><span style="line-height:45px;color:grey">Dashboard</span>
+                            </div>
+                        </li>
+
+                        <li style="padding:0 0;">
+                            <div class="collapsible-header">
+                                <i class="material-icons" style="line-height:45px;color:grey">airplay</i><span style="line-height:45px;color:grey">Service Mgmt</span>
+                            </div>
+                            <div class="collapsible-body ServiceMgmt">
+                                <ul>
+                                    <li style="height:45px;padding:0 0;background-color:#333333;"><a href="/services/ts" style="padding:0 0;height:45px;margin-left:68px;line-height:45px;"><span style="line-height:45px;color:grey">TS Service</span></a></li>
+                                    <li style="height:45px;padding:0 0;background-color:#333333;"><a href="/services/common" style="padding:0 0;height:45px;margin-left:68px;line-height:45px;"><span style="line-height:45px;color:grey">Common Service</span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li style="padding:0 0;">
+                            <div class="collapsible-header">
+                                <i class="material-icons" style="line-height:45px;color:grey">language</i><span style="line-height:45px;color:grey">CDN</span>
+                                <!-- <span class="cdnfolder" style="line-height:45px;color:grey;float:right;font-size:16px;">∨</span> -->
+                            </div>
+                            <div class="collapsible-body CDN">
+                                <ul>
+                                    <li style="height:45px;padding:0 0;background-color:#333333;"><a href="/tasklogdetail" style="padding:0 0;height:45px;margin-left:68px;line-height:45px;"><span style="line-height:45px;color:grey">总览</span></a></li>
+                                    <li style="height:45px;padding:0 0;background-color:#333333;"><a href="/detailsearch" style="padding:0 0;height:45px;margin-left:68px;line-height:45px;"><span style="line-height:45px;color:grey">筛选</span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Rigth -->
+            <div id="rightDiv" class="rightDiv">
+                <!-- Navbar -->
+                <div style="z-index:1003;">
+                    <ul id="dropdown" class="dropdown-content">
+                        <li>
+                            <a href="#!">Logout</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#!">Profile info</a>
+                        </li>
+                    </ul>
+                    <nav class="top-nav" style="background-color:#F5F5F5;height:41px;">
+                        <div class="nav-wrapper" style="margin-left:0.5%">
+{#                            {% if flag == 'vm_create' %}#}
+                            <div class="shop_list_con" style="padding:0px 0px;height:100%;">
+                                <i style="color:#319BE6;line-height:41px;height:41px;margin:0px;" class="material-icons left">label</i>
+                                <select id="serviceType" class="ui_form_select select_native_s select_native_net" style="color:#424242;height:30px;vertical-align:10px">
+                                    {% for serviceType in service_types %}
+                                    <option serviceTypedetail={{ serviceType.detail }} data-name={{ serviceType.name }} serviceTypeid={{ serviceType.id }}>{{ serviceType.detail }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+{#                            {% elif flag == 'qcloud' %}#}
+{#                            {% endif %}#}
+                            <div style="float:right;margin-right:30px;height:41px;line-height:41px;">
+                                <a id="username" style="color:#424242;" href="/vm_create">登录</a>
+                                <a id="logout" style="margin-left:20px;color:#424242;" href="/logout">退出</a>
+                            </div>
+                        </div>
+                        <!-- show left nav -->
+                        <div style="height:100%;margin-top:-41px;float:left;">
+                            <a id="showLeftNav" href="javascript:void(0);" class="button-collapse top-nav waves-effect waves-light circle">
+                                <i class="mdi-navigation-menu" style="color:#9B9B9B;line-height:41px;height:41px;"></i>
+                            </a>
+                        </div>
+                    </nav>
+
+                </div>
+
+                <!-- content -->
+                <div id="frame_div" style="margin-top:0px;background-color: #FFFFFF;">
+                    <div id="loading_container" style="position:absolute;z-index:999;width:100%;height:100%;background-color:#424242;opacity:0.6;">
+                        <!--Loading-->
+                        <div class="preloader-wrapper active" style="top:40%;left:40%">
+                            <div class="spinner-layer spinner-blue-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+                    <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+                    <script type="text/javascript" src="/static/js/materialize.js"></script>
+                    <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
+
+                    <div style="width:99%;height:99%;margin-top:20px;margin-left:0.5%;margin-right:0.5%;background-color:#FFFFFF;" id="frame">
+                        {% if flag == 'show_ts_service' %}
+                            {% include "ts_service_list.html" %}
+                        {% elif flag == 'qcloud' %}
+                            {% include "vir_machine_list_q.html" %}
+                        {% elif flag == 'tasklogdetail'%}
+                            {% include "task_log_detail.html" %}
+                        {% elif flag == 'detailsearch'%}
+                            {% include "task_log_detail_search.html" %}
+                        {% else %}
+                            {% include "index.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $("#slide-out li").css("background-color","#424242");
+            $(".CDN li").css("background-color","#DEDEDE");
+            $(".ServiceMgmt li").css("background-color","#DEDEDE");
+            if(window.location.href.indexOf('services/ts') > 0) {
+                $(".ServiceMgmt").show();
+{#                $("#slide-out li").eq(2).css("background-color","#FFFFFF");#}
+                $("#slide-out li").eq(2).css("background-color","#319BE6");
+            } else if(window.location.href.indexOf('services/common') > 0) {
+                $(".ServiceMgmt").show();
+                $("#slide-out li").eq(3).css("background-color","#319BE6");
+            } else if(window.location.href.indexOf('tasklogdetail') > 0) {
+                $(".CDN").show();
+                $("#slide-out li").eq(5).css("background-color","#319BE6");
+            } else if(window.location.href.indexOf('detailsearch') > 0) {
+                $(".CDN").show();
+                $(".cdnfolder").text("∧");
+                $("#slide-out li").eq(6).css("background-color","#319BE6");
+            } else {
+                $("#slide-out li").eq(1).css("background-color","#319BE6");
+            }
+
+            //dashboard
+            $("#slide-out li").eq(0).click(function() {
+                $(".CDN").hide();
+                $(".cdnfolder").text("∨");
+                location.href = '/construction';
+            });
+
+            //ServiceMgmt
+            $("#slide-out li").eq(1).click(function() {
+                $(".CDN").hide();
+                $(".ServiceMgmt").slideToggle("normal");
+            });
+
+            //CDN
+            $("#slide-out li").eq(4).click(function() {
+                $(".ServiceMgmt").hide();
+                $(".CDN").slideToggle("normal");
+            });
+
+            $("#showLeftNav").click(function() {
+                $(".side-nav.fixed").animate({"left":"0"});
+                $("#sideCover").show();
+            });
+            $("#sideCover").click(function() {
+                $(".side-nav.fixed").animate({"left":"-105%"});
+                $("#sideCover").hide();
+            });
+
+            var Cookie=new Object(); 
+            Cookie.setCookie=function(name, value, option){ 
+                var str=name+'='+escape(value); 
+                if(option){ 
+                    if(option.expireHours){ 
+                        var d=new Date(); 
+                        d.setTime(d.getTime()+option.expireHours*3600*1000); 
+                        str+='; expires='+d.toGMTString(); 
+                    } 
+                    if(option.path) str+='; path='+option.path; 
+                    if(option.domain) str+='; domain='+option.domain;
+                    if(option.secure) str+='; true'; 
+                } 
+                document.cookie=str; 
+            } 
+            Cookie.getCookie=function(name){ 
+                var arr = document.cookie.split('; '); 
+                if(arr.length==0) return ''; 
+                for(var i=0; i <arr.length; i++){ 
+                    tmp = arr[i].split('='); 
+                    if(tmp[0]==name) return unescape(tmp[1]); 
+                } 
+                return ''; 
+            } 
+            Cookie.delCookie=function(name){ 
+                this.setCookie(name,'',{expireHours:-1}); 
+            }
+
+            $("#username").text(document.cookie.split("=")[1]?document.cookie.split("=")[1]:"登录");
+            if(document.cookie.split("=")[1]) {
+                $("#logout").show();
+            } else {
+                $("#logout").hide();
+            }
+
+            $("#logout").on("click", function() {
+                Cookie.delCookie('username'); 
+            });
+
+
+            $(function() {
+                initWindowSize();
+                window.onresize = function(){
+                    initWindowSize();
+                    $("#sideCover").hide();
+                }
+            });
+            function initWindowSize() {
+                if(document.body.offsetWidth < window.screen.availWidth-100) {
+                    $(".side-nav.fixed").animate({"left":"-105%"});
+                    $("#rightDiv").removeClass("rightDiv");
+                    $("#rightDiv").addClass("rightDiv1");
+                    $(".nav-wrapper").css("left","35px");
+                    $("#showLeftNav").show();
+                } else {
+                    $(".side-nav.fixed").animate({"left":"0%"});
+                    $("#rightDiv").removeClass("rightDiv1");
+                    $("#rightDiv").addClass("rightDiv");
+                    $(".nav-wrapper").css("left","0px");
+                    $("#showLeftNav").hide();
+                }
+            }
+        </script>
+    </body>
+</html>

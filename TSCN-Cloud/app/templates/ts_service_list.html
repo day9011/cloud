@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <title>List</title>
+        </meta>
+        <!--<link type="text/css" rel="stylesheet" href="/static/css/style.css" />-->
+        <!--<link type="text/css" rel="stylesheet" href="/static/css/materialize.css"/>-->
+        <link type="text/css" rel="stylesheet" href="/static/css/nouislider.min.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/jquery.dataTables.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/smartMenu.css" />
+    </head>
+    <body>
+
+    <div id="modal3" class="modal bottom-sheet">
+        <!--详情-->
+        <table id="vertical_table" class="display dataTable no-footer" style="margin-top:6%;width:96%;border-bottom:1px solid #DDDDDD">
+            <tr role="row" class="odd"><td colspan="2">虚拟机名称</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">主机名</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">主机类型</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">操作系统</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">创建时间</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">状态</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">宿主机IP</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">内网IP</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">公网IP</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">实例ID</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">错误信息</td><td></td></tr>
+        </table>
+    </div>
+
+    <ul id="role_operation_box">
+        <li style="float:left;margin-left:0.5%"><a id="create_role" class="modal-trigger waves-effect waves-light btn" style="padding:0px 10px;font-size:xx-small;text-align:center;background-color:#319BE6;width:110px;height:30px;line-height:30px;" href="#create_services"><i class="material-icons left" style="margin-right:7px;line-height:30px;">note_add</i>Create</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="delete_role" href="javascript:void(0)" class="waves-effect waves-light btn disabled" style="font-size:xx-small;width:100px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">delete</i>Delete</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="start_role" href="javascript:void(0)" class="ts-role-action waves-effect waves-light btn disabled" style="font-size:xx-small;width:100px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">play_arrow</i>Start</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="stop_role" href="javascript:void(0)" class="waves-effect waves-light btn disabled" style="font-size:xx-small;width:100px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">stop</i>Stop</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="restart_role" href="javascript:void(0)" class="waves-effect waves-light btn disabled" style="font-size:xx-small;width:110px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">swap_vertical_circle</i>Restart</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="refresh_role" href="javascript:void(0)" class="waves-effect waves-light btn" style="font-size:xx-small;width:110px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">loop</i>Refresh</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="upgrade_role" class="modal-trigger waves-effect waves-light btn disabled" style="padding:0px 10px;font-size:xx-small;text-align:center;background-color:firebrick;width:110px;height:30px;line-height:30px;" href="#upgradeRole"><i class="material-icons left" style="margin-right:7px;line-height:30px;">assignment</i>Upgrade</a></li>
+    </ul>
+
+    <div id="create_services" class="modal modal-fixed-footer" style="min-width:750px;">
+        <!--头部-->
+        <div class="modal-head" style="width:100%;height:80px;background-color:#424242;">
+            <div>
+                <a class="closeCreateModal btn-floating waves-effect waves-light grey darken-1" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">X</a>
+            </div>
+            <ol style="margin-left:24%;padding:0 0;">
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_num btn-floating light-blue darken-3">1</span><br/>
+                    <span style="font-size:10px;" class="vm_title">Item</span>
+                </li>
+                <li style="width:250px;margin-top:10px;">
+                    <hr />
+                </li>
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_create_title vm_num btn-floating">2</span><br/>
+                    <span style="font-size:10px;" class="vm_title">Confirmation</span>
+                </li>
+            </ol>
+        </div>
+        <!--第一页-->
+        <div class="modal-content" style="display:block;height:calc(100% - 120px);">
+            <div id="create_attr" class="tab_list tab_server" style="overflow: visible;">
+                <ul class="shop_list">
+                    <li class="list">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Poject:</p>
+                                </div>
+                                <div class="li_value">
+                                    <p class="li_value project_name"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Domain:</p>
+                                </div>
+                                <div class="li_value">
+                                    <p class="li_value" id="create_domain"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list select">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Role:</p>
+                                </div>
+                                <div class="li_value">
+                                    <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                        <select id="create_roleOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName"></select>
+                                            <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                        <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list select">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Branch:</p>
+                                </div>
+                                <div class="li_value">
+                                    <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                        <select id="create_branchOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName"></select>
+                                        <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                        <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list select">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Tag:</p>
+                                </div>
+                                <div class="li_value">
+                                    <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                        <select id="create_tagOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName"></select>
+                                        <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                        <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list get_data">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*CPU:</p>
+                                </div>
+                                <div class="li_value">
+                                    <p class="li_value" id="create_cpu">Choose role first</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list get_data">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*MEM:</p>
+                                </div>
+                                <div class="li_value">
+                                    <p class="li_value" id="create_mem">Choose role first</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!--&lt;!&ndash;选择硬盘&ndash;&gt;-->
+                    <!--<li class="list get_data">-->
+                        <!--<div class="ul_table">-->
+                            <!--<div class="li_row">-->
+                                <!--<div class="li_title">-->
+                                    <!--<p class="li_title">*DISK:</p>-->
+                                <!--</div>-->
+                                <!--<div class="li_value">-->
+                                    <!--<p class="li_value" id="create_disk">Choose role first</p>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
+                </ul>
+
+                <div class="page_error">
+                    <p class="error_info">can't get the data</p>
+                </div>
+            </div>
+        </div>
+        <!--第二页-->
+        <div id="confirm_create" class="tab_list tab_server" style="position:absolute;display: none;height:calc(100% - 120px);overflow: scroll;width: 100%">
+            <ul class="shop_list" style="overflow: visible;">
+                <li><p>test</p></li>
+            </ul>
+
+            <div class="page_error">
+                <p class="error_info">can't get the data</p>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <a id="create" href="javascript:void(0);" style="border:1px solid #DBDCDF;background-color:#358BF2;color:#ffffff" class="create modal-action waves-effect waves-green btn-flat">创建</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="next modal-action waves-effect waves-green btn-flat">下一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="front modal-action waves-effect waves-green btn-flat">上一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;" class="cancel modal-close modal-action waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+
+    {#        upgrade modal#}
+    <div id="upgradeRole" class="modal modal-fixed-footer" style="min-width:750px;">
+        <!--头部-->
+        <div class="modal-head" style="width:100%;height:80px;background-color:#424242;">
+            <div>
+                <a class="closeCreateModal btn-floating waves-effect waves-light grey darken-1" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">X</a>
+            </div>
+            <ol style="margin-left:25%;padding:0 0;">
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_num btn-floating light-blue darken-3">1</span><br/>
+                    <span style="font-size:10px;" class="vm_title">Tag Option</span>
+                </li>
+                <li style="width:250px;margin-top:10px;">
+                    <hr />
+                </li>
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_num btn-floating">2</span><br/>
+                    <span style="font-size:10px;" class="vm_title">Confirmation</span>
+                </li>
+            </ol>
+        </div>
+        <!--first page-->
+        <div class="modal-content" style="display:block;height:calc(100% - 120px);">
+            <div id="role_tag" class="tab_list tab_server" style="overflow: visible;">
+                <ul class="shop_list">
+
+                    <li class="list">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Project:</p>
+                                </div>
+                                <div class="li_value">
+                                    <p class="li_value project_name"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list select">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Branch:</p>
+                                </div>
+                                <div class="li_value">
+                                    <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                        <select id="branchOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName"></select>
+                                        <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                        <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list select">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Version Tag:</p>
+                                </div>
+                                <div class="li_value">
+                                    <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                        <select id="tagOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName"></select>
+                                        <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                        <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list">
+                        <div class="ul_table">
+                            <div class="li_row">
+                                <div class="li_title">
+                                    <p class="li_title">*Need Restart:</p>
+                                </div>
+                                <div class="li_value">
+                                    <div id="need_restart">
+                                        <span>
+                                            <input id="r1" name="need_restart_option" type="radio" value="1"/>
+                                            <label for="r1">Yes</label>
+                                            <input id="r0" name="need_restart_option" type="radio" value="0" checked/>
+                                            <label for="r0">No</label>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="page_error">
+                <p class="error_info">can't get the data</p>
+            </div>
+        </div>
+
+        <div id="confirm_upgrade" class="tab_list tab_server" style="position:absolute;display: none;height:calc(100% - 120px);overflow: scroll;width: 100%">
+            <ul class="shop_list" style="overflow: visible;">
+                <li><p>no info</p></li>
+            </ul>
+
+            <div class="page_error">
+                <p class="error_info">can't get the data</p>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <a id="upgrade" href="javascript:void(0);" style="border:1px solid #DBDCDF;background-color:#358BF2;color:#ffffff" class="create modal-action waves-effect waves-green btn-flat">更新</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="next modal-action waves-effect waves-green btn-flat">下一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="front modal-action waves-effect waves-green btn-flat">上一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;" class="cancel modal-close modal-action waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <input id="v_domain" type="hidden" value="0">
+    <input id="v_project" type="hidden" value="0">
+    <input id="v_branch" type="hidden" value="0">
+    <input id="v_tag" type="hidden" value="0">
+    <input id="v_restart" type="hidden" value="0">
+    <input id="v_role_id" type="hidden" value="0">
+    <input id="v_role_name" type="hidden" value="0">
+    <input id="v_mem" type="hidden" value="0">
+    <input id="v_cpu" type="hidden" value="0">
+    <input id="v_seq" type="hidden" value="0">
+    <input id="v_port" type="hidden" value="0">
+    <input id="v_config_url" type="hidden" value="0">
+    <input id="v_download_url" type="hidden" value="0">
+    <input id="v_ts_role_name" type="hidden" value="0">
+    <script src="/static/js/nouislider.min.js"></script>
+    <script src="/static/js/plugins/jquery.blockUI.js"></script>
+        <script type="text/javascript">
+            if(window.parent.window.document.getElementById("loading_container")) {
+                window.parent.window.document.getElementById("loading_container").style.display = "none";
+            }
+            var page_has_error = false;
+            initPage();
+            function show_last_page_btns(){
+                $(".create").show();
+                $(".next").hide();
+                $(".front").show();
+                $(".cancel").hide();
+            }
+            function show_first_page_btns(){
+                $(".create").hide();
+                $(".next").show();
+                $(".front").hide();
+                $(".cancel").show();
+            }
+            function show_middle_page_btns(){
+                $(".create").hide();
+                $(".next").show();
+                $(".front").show();
+                $(".cancel").hide();
+            }
+            var pageIndex = 0;
+            if (!pageIndex) {
+                show_first_page_btns();
+            }
+
+            function init_create() {
+                $("#create_branchOption").empty();
+                var html = '<option value="" disabled selected> --- Choose role first ---</option>';
+                $("#create_branchOption").append(html);
+                $("#create_tagOption").empty();
+                var html = '<option value="" disabled selected> --- Choose branch first ---</option>';
+                $("#create_tagOption").append(html);
+                $("#create_services").find(".get_data").hide();
+                $(".page_error").hide();
+            }
+
+            $("#delete_role").click(function () {
+                $.blockUI({ message: '<h1>请稍后...</h1>' });
+                if (selectToOperaList.length > 0)
+                    for (var i = 0; i < selectToOperaList.length; i++){
+                        del_ts_role(selectToOperaList[i]);
+                    }
+                $.unblockUI();
+            });
+
+            function del_ts_role (objList) {
+                ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+                if( ori_status == 'running' || ori_status == 'starting' || ori_status == 'creating') {
+                    alert('can\'t delete when running or starting or creating');
+                    return;
+                }
+                var param = {
+                    'ts_roleId': objList['ts_roleId']
+                };
+                $.ajax({
+                    'type':'HTTP',
+                    'method':'POST',
+                    'url':'/ts/delete/tsRole',
+                    dataType: 'json',
+                    data: JSON.stringify(param),
+                    success:function(req){
+                        console.log(req);
+                        if (!req['status']) objList["objself"].remove();
+                    },
+                    error:function(){
+                        alert("delete failed!");
+                    }
+                });
+            }
+
+            $("#create_role").click(function () {
+                $.blockUI({ message: '<h1>请稍后...</h1>' });
+                init_create();
+                var project_name = $("#v_project").val();
+                $("#create_branchOption").empty();
+                var html = '<option value="" disabled selected> --- Choose role first ---</option>';
+                $("#create_branchOption").append(html);
+                $("#create_tagOption").empty();
+                var html = '<option value="" disabled selected> --- Choose branch first ---</option>';
+                $("#create_tagOption").append(html);
+                $(".project_name").text(project_name);
+                $("#create_domain").text($("#ts_domain option:selected").text());
+                $.ajax({
+                    "type": "HTTP",
+                    "method": "GET",
+                    "url": "/ts/data/role_list/" + project_name + "/" + $("#ts_domain").val(),
+                    success: function (data) {
+                        $("#create_roleOption").empty();
+                        console.log(data);
+                        var html = '';
+                        if (data['status'] || data['message'].length == 0) {
+                            html = '<option value="" disabled selected> --- Get role list error ---</option>';
+                            page_error('get data error');
+                            $(".page_error").show();
+                            $.unblockUI();
+                            return;
+                        }
+                        else {
+                            var rolelist = data['message'];
+                            var html = '<option value="" disabled selected> --- Choose your role ---</option>';
+                            for (var i = 0; i < rolelist.length; i++){
+                                html+='<option value="'+ rolelist[i]["id"] + '">' + rolelist[i]["name"] + '</option>';
+                            }
+                        }
+                        $("#create_roleOption").append(html);
+                        $.unblockUI();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                        $(".page_error").show();
+                        $.unblockUI();
+                        return;
+                    }
+                });
+                $("#create_services").find(".get_data").hide();
+                $(".page_error").hide();
+            });
+
+            $("#create_roleOption").change(function(){
+                $.blockUI({ message: '<h1>请稍后...</h1>' });
+                init_create();
+                page_has_error = false;
+                $(".page_error").hide();
+                var project = $("#v_project").val();
+                var role = $("#create_roleOption").val();
+                var domain = $("#ts_domain").val();
+                $("#create_services").find(".get_data").hide();
+                $("#create_services").find(".page_error").hide();
+                $.ajax({
+                    "type": "HTTP",
+                    "method": "GET",
+                    "url": "/ts/data/role_template/" + project + "/" + domain + "/" + role,
+                    success: function (data) {
+                        console.log(data);
+                        if (data['status'] || data['message'].length == 0) {
+                            page_error('get data error');
+                            $(".page_error").show();
+                            $.unblockUI();
+                            return;
+                        }
+                        else {
+                            var template_detail = data['message'][0];
+                            $("#create_services").find(".get_data").show();
+                            $("#create_cpu").text(template_detail['cpu']);
+                            $("#create_mem").text(template_detail['mem'] + ' M');
+//                            $("#create_disk").text(template_detail['disk'] + "G");
+                        }
+                        $.unblockUI();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                        $(".page_error").show();
+                        $.unblockUI();
+                        return;
+                    }
+                });
+                $.blockUI({ message: '<h1>请稍后...</h1>' });
+                $.ajax({
+                    type: 'HTTP',
+                    method: 'GET',
+                    url: '{{ tag_server_url }}/branch/' + project + '/' + $("#ts_domain option:selected").text() + '/' + $("#create_roleOption option:selected").text(),
+                    success: function (data) {
+                        console.log(data);
+                        if (data['status'] || data['message'].length == 0) {
+                            console.log("has eror");
+                            page_error('get data error');
+                            $(".page_error").show();
+                            $.unblockUI();
+                            return;
+                        }
+                        $("#create_branchOption").empty();
+                        var branchlist = data['message'];
+                        var html = '<option value="" disabled selected> --- Choose your branch ---</option>';
+                        for (var i = 0; i < branchlist.length; i++) {
+                            html += '<option value="' + branchlist[i]['branch'] + '"><a>' + branchlist[i]['branch'] + '</a></option>';
+                        }
+                        $("#create_branchOption").append(html);
+                        $.unblockUI();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                        $(".page_error").show();
+                        $.unblockUI();
+                        return;
+                    }
+                });
+            });
+
+            $("#create_branchOption").change(function() {
+                $.blockUI({ message: '<h1>请稍后...</h1>' });
+                page_has_error = false;
+                $(".page_error").hide();
+                var domain = $("#ts_domain option:selected").text();
+                var project = $("#v_project").val();
+                var role = $("#create_roleOption option:selected").text();
+                var branch = $("#create_branchOption option:selected").text();
+                $.ajax({
+                    type: 'HTTP',
+                    method: 'GET',
+                    url: '{{ tag_server_url }}/tag/list/' + project + '/' + domain + '/' + role + '/' + branch + '?limit=10',
+                    success: function (data) {
+                        console.log(data);
+                        if (data['status'] || data['message'].length == 0) {
+                            page_error('get data error');
+                            $(".page_error").show();
+                            $.unblockUI();
+                            return;
+                        }
+                        $("#create_tagOption").empty();
+                        var taglist = data['message'];
+                        var html = '<option value="" disabled selected> --- Choose your tag ---</option>';
+                        for (var i = 0; i < taglist.length; i++) {
+                            html += '<option value="' + taglist[i]['tag'] + '"><a>' + 'Tag:' + taglist[i]['tag'] + '   Commit Time:' + taglist[i]['commit_time'] + '</a></option>';
+                        }
+                        $("#create_tagOption").append(html);
+                        $.unblockUI();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                        $(".page_error").show();
+                        $.unblockUI();
+                        return;
+                    }
+                });
+            });
+
+            $("select").change(function() {
+                $(this).parent().children(".systemNameError").hide();
+            });
+            $(".next").click(function() {
+                if ($("#role_tag").is(":visible")) {
+                    upgrade_value();
+                }
+                if ($("#create_attr").is(":visible")) {
+                    create_value();
+                }
+                var pages = $(this).parent().parent().children("div");
+                var pagesNum = pages.length - 2;
+                pageIndex++;
+                if (page_has_error) {
+                    $(".page_error").show();
+                }
+                else {
+                    $(".page_error").hide();
+                }
+                if(pageIndex == 1) pageIndex++;
+                if(pageIndex == 2) {
+                    if(!requireOption($(pages[pageIndex - 1])) || page_has_error) {
+                        pageIndex = 0;
+                        return;
+                    }
+                }
+                $(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating").removeClass("light-blue darken-3");
+//                console.log(pageIndex);
+//                console.log($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pagesNum - 1]);
+                $(".tab_server").hide();
+                if(pageIndex >= pagesNum) {
+                    show_last_page_btns();
+                    $(pages[pagesNum]).show();
+                    $($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pagesNum - 1]).addClass("light-blue darken-3");
+                    return;
+                }
+                else {
+                    show_middle_page_btns();
+                    $(pages[pageIndex]).show();
+                    $($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pageIndex - 1]).addClass("light-blue darken-3");
+                    return;
+                }
+            });
+
+            $(".front").click(function() {
+                $(".tab_server").hide();
+                var pages = $(this).parent().parent().children("div");
+                pageIndex--;
+                $(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating").removeClass("light-blue darken-3");
+                if(pageIndex < 1) {
+                    pageIndex = 1;
+                }
+                if(pageIndex == 1) {
+                    show_first_page_btns();
+                } else {
+                    show_middle_page_btns();
+                }
+                $(pages[pageIndex]).children().show();
+                $(pages[pageIndex]).show();
+                $($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pageIndex- 1]).addClass("light-blue darken-3");
+                $(".page_error").hide();
+            });
+
+            function create_value() {
+                $("#v_domain").val($("#ts_domain").val());
+                $("#v_role_name").val($("#create_roleOption option:selected").text());
+                $("#v_role_id").val($("#create_roleOption").val());
+                $("#v_branch").val($("#create_branchOption").val());
+                $("#v_tag").val($("#create_tagOption").val());
+                $("#v_cpu").val($("#create_cpu").text());
+                var mem_str = $("#create_mem").text();
+                $("#v_mem").val((mem_str.substring(0, mem_str.indexOf('M'))));
+                $("#confirm_create").find(".shop_list").empty();
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Poject:</p></div><div class="li_value"><p class="li_value">' + $("#v_project").val() + '</p></div></div></div></li>';
+                $("#confirm_create").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Domain:</p></div><div class="li_value"><p class="li_value">' + $("#ts_domain option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_create").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Branch:</p></div><div class="li_value"><p class="li_value">' + $("#create_branchOption option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_create").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Tag:</p></div><div class="li_value"><p class="li_value">' + $("#create_tagOption option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_create").find(".shop_list").append(html);
+                {
+                    $.ajax({
+                        type: 'HTTP',
+                        method: 'GET',
+                        url: '/ts/data/role_seq/' + $("#v_project").val() + '/' + $("#v_domain").val() + '/' + $("#create_roleOption").val(),
+                        success: function(data) {
+                            console.log(data);
+                            if (!(data['status']) && (data['message'].length)) {
+                                var seq = 0;
+                                if (data['message'][0]['seq']) seq = data['message'][0]['seq'];
+                                var name = $("#create_roleOption option:selected").text();
+                                $("#v_seq").val((seq + 1));
+                                if (seq < 10)
+                                    name += '0' + (seq + 1);
+                                else name += (seq + 1);
+                                name += '.' + $("#ts_domain option:selected").text() + '.' + $("#v_project").val() + '.com';
+                                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Name:</p></div><div class="li_value"><p class="li_value">' + name + '</p></div></div></div></li>';
+                                $("#v_ts_role_name").val(name);
+                                $("#confirm_create").find(".shop_list").append(html);
+                            }
+                            else {
+                                page_error("get data error");
+                                $(".page_error").show();
+                                return;
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                            $(".page_error").show();
+                            return;
+                        }
+                    });
+                }
+                {
+                    $.ajax({
+                        type: 'HTTP',
+                        method: 'GET',
+                        url: '/ts/data/role_detail/' + $("#v_project").val() + '/' + $("#v_domain").val() + '/' + $("#create_roleOption").val(),
+                        success: function(data) {
+                            console.log(data);
+                            if (!(data['status']) && (data['message'].length)) {
+                                var ports = data['message'][0]['port'];
+                                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Ports:</p></div><div class="li_value"><p class="li_value">' + ports + '</p></div></div></div></li>';
+                                $("#v_port").val(ports);
+                                $("#confirm_create").find(".shop_list").append(html);
+                            }
+                            else {
+                                page_error("get data error");
+                                $(".page_error").show();
+                                return;
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                            $(".page_error").show();
+                            return;
+                        }
+                    });
+                }
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*CPU:</p></div><div class="li_value"><p class="li_value">' + $("#v_cpu").val() + '</p></div></div></div></li>';
+                $("#confirm_create").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*MEM:</p></div><div class="li_value"><p class="li_value">' + $("#v_mem").val() + ' M' + '</p></div></div></div></li>';
+                $("#confirm_create").find(".shop_list").append(html);
+                console.log('{{ tag_server_url }}/tag/url/' + $("#v_project").val() + '/' + $("#ts_domain option:selected").text() + '/' + $("#create_roleOption option:selected").text() + '/' + $("#create_branchOption").val() + '/' + $("#create_tagOption").val());
+                $.ajax({
+                    type: 'HTTP',
+                    method: 'GET',
+                    url: '{{ tag_server_url }}/tag/url/' + $("#v_project").val() + '/' + $("#ts_domain option:selected").text() + '/' + $("#create_roleOption option:selected").text() + '/' + $("#create_branchOption").val() + '/' + $("#create_tagOption").val(),
+                    success: function (data) {
+                        console.log(data);
+                        if (!(data['status']) && (data['message'].length)) {
+                            var urls = data['message'][0];
+                            var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Config Url:</p></div><div class="li_value"><p class="li_value">' + urls['config_url'] + '</p></div></div></div></li>';
+                            $("#v_config_url").val(urls['config_url']);
+                            $("#confirm_create").find(".shop_list").append(html);
+                            var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Download Url:</p></div><div class="li_value"><p class="li_value">' + urls['download_url'] + '</p></div></div></div></li>';
+                            $("#v_download_url").val(urls['download_url']);
+                            $("#confirm_create").find(".shop_list").append(html);
+                        }
+                        else {
+                            page_error("get data error");
+                            $(".page_error").show();
+                            return;
+                        }
+                    }
+                });
+            }
+
+            function page_error(str) {
+                page_has_error = true;
+                $(".page_error").find("p").html(str);
+            }
+            
+            function upgrade_value() {
+                $("#v_domain").val($("#ts_domain").val());
+                $("#v_role_id").val($("#RoleId").val());
+                $("#v_role_name").val($("#RoleId option:selected").attr("data-name"));
+                $("#v_branch").val($("#branchOption").val());
+                $("#v_tag").val($("#tagOption").val());
+                $("#v_restart").val($('input[name=need_restart_option]:checked').val());
+                $("#confirm_upgrade").find(".shop_list").empty();
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Poject:</p></div><div class="li_value"><p class="li_value">' + $("#v_project").val() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Domain:</p></div><div class="li_value"><p class="li_value">' + $("#ts_domain option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Branch:</p></div><div class="li_value"><p class="li_value">' + $("#branchOption option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Tag:</p></div><div class="li_value"><p class="li_value">' + $("#tagOption option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var restart_str = "";
+                if($('input[name=need_restart_option]:checked').val()) {
+                    restart_str = "YES";
+                }
+                else {
+                    restart_str = "NO";
+                }
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Restart:</p></div><div class="li_value"><p class="li_value">' + restart_str + '</p></div></div></div></li>';
+                console.log('{{ tag_server_url }}/tag/url/' + $("#v_project").val() + '/' + $("#ts_domain option:selected").text() + '/' + $("#RoleId option:selected").attr("data-name") + '/' + $("#branchOption").val() + '/' + $("#tagOption").val());
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                $.ajax({
+                    type: 'HTTP',
+                    method: 'GET',
+                    url: '{{ tag_server_url }}/tag/url/' + $("#v_project").val() + '/' + $("#ts_domain option:selected").text() + '/' + $("#RoleId option:selected").attr("data-name") + '/' + $("#branchOption").val() + '/' + $("#tagOption").val(),
+                    success: function (data) {
+                        console.log(data);
+                        if (!(data['status']) && (data['message'].length)) {
+                            var urls = data['message'][0];
+                            var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Config Url:</p></div><div class="li_value"><p class="li_value">' + urls['config_url'] + '</p></div></div></div></li>';
+                            $("#v_config_url").val(urls['config_url']);
+                            $("#confirm_upgrade").find(".shop_list").append(html);
+                            var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Download Url:</p></div><div class="li_value"><p class="li_value">' + urls['download_url'] + '</p></div></div></div></li>';
+                            $("#v_download_url").val(urls['download_url']);
+                            $("#confirm_upgrade").find(".shop_list").append(html);
+                        }
+                        else {
+                            page_error('get data error');
+                            $(".page_error").show();
+                            return;
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                        $(".page_error").show();
+                        return;
+                    }
+                });
+            }
+
+            function init_value() {
+                $("#v_role_id").val($("#RoleId").val());
+                $("#v_role_name").val($("#RoleId option:selected").attr("data-name"));
+                $("#RoleId").change(function () {
+                    $("#v_role_id").val($("#RoleId").val());
+                    $("#v_role_name").val($("#RoleId option:selected").attr("data-name"));
+                });
+
+                $("#v_domain").val($("#ts_domain").val());
+                $("#ts_domain").change(function () {
+                    $("#v_domain").val($("#ts_domain").val());
+                });
+                $("#v_branch").val("0");
+                $("#v_tag").val("0");
+                $("#v_restart").val("0");
+                $("#v_config_url").val("0");
+                $("#v_download_url").val("0");
+            }
+
+            $("#upgrade").click(function () {
+                if (!page_has_error) {
+                    console.log('project:' + $("#v_project").val());
+                    console.log('domain:' + $("#v_domain").val());
+                    console.log('role_id:' + $("#v_role_id").val());
+                    console.log('role_name:' + $("#v_role_name").val());
+                    console.log('branch:' + $("#v_branch").val());
+                    console.log('tag:' + $("#v_tag").val());
+                    console.log('restart:' + $("#v_restart").val());
+                    console.log('config_url:' + $("#v_config_url").val());
+                    console.log('download_url:' + $("#v_download_url").val());
+                    for (var i = 0; i < selectToOperaList.length; i++) {
+                        upgrade_role_func(selectToOperaList[i]);
+                    }
+                    for(var i = 0; i < selectToOperaList.length; i++) {
+                        query_ts_role_status(selectToOperaList[i]['ts_roleId'], selectToOperaList[i]["objself"]);
+                    }
+                    $(".closeCreateModal").trigger("click");
+                }
+                else {
+                    $(".page_error").show();
+                    return;
+                }
+            });
+
+            $("#create").click(function () {
+                if (!page_has_error) {
+                    console.log('project:' + $("#v_project").val());
+                    console.log('domain:' + $("#v_domain").val());
+                    console.log('role_id:' + $("#v_role_id").val());
+                    console.log('role_name:' + $("#v_role_name").val());
+                    console.log('branch:' + $("#v_branch").val());
+                    console.log('tag:' + $("#v_tag").val());
+                    console.log('ts_role_name:' + $("#v_ts_role_name").val());
+                    console.log('mem:' + $("#v_mem").val());
+                    console.log('cpu:' + $("#v_cpu").val());
+                    console.log('seq:' + $("#v_seq").val());
+                    console.log('port:' + $("#v_port").val());
+                    console.log('config_url:' + $("#v_config_url").val());
+                    console.log('download_url:' + $("#v_download_url").val());
+                    $.ajax({
+                        type: 'HTTP',
+                        method: 'GET',
+                        url: '/ts/data/env/' + $("#v_project").val() + '/' + $("#v_domain").val() + '/' + $("#v_role_id").val(),
+                        success: function (data) {
+                            console.log(data);
+                            if (data['status'] || data['message'].length == 0) {
+                                page_error('get data error');
+                                alert( data['message']);
+                                return;
+                            }
+                            else {
+                                var env = {};
+                                var temp_dict = data['message'];
+                                for(var i = 0;i < temp_dict.length; i++)
+                                    env[temp_dict[i]['k']] = temp_dict[i]['v'];
+                                var param = {
+                                    'project': $("#v_project").val(),
+                                    'domain': $("#v_domain").val(),
+                                    'seq': parseInt($("#v_seq").val()),
+                                    'role_id': $("#v_role_id").val(),
+                                    'tsRoleName': $("#v_ts_role_name").val(),
+                                    'roleName': $("#v_role_name").val(),
+                                    'cpu': parseInt($("#v_cpu").val()),
+                                    'mem': parseInt($("#v_mem").val() * 1024 * 1024),
+                                    'image': $("#v_download_url").val(),
+                                    'tag': $("#v_tag").val(),
+                                    'port': $("#v_port").val().split(","),
+                                    'branch': $("#v_branch").val(),
+                                    'env': env,
+                                };
+                                console.log(param);
+                                $(".closeCreateModal").trigger("click");
+                                $.ajax({
+                                    type: 'HTTP',
+                                    method: 'POST',
+                                    url: '/ts/create/tsRole',
+                                    dataType: 'json',
+                                    data: JSON.stringify(param),
+                                    success: function (data) {
+                                        console.log(data);
+//                                        if (data['status'] || data['message'].length == 0) {
+                                        if (parseInt(data['status'])) {
+                                            alert(data['message']);
+                                            return;
+                                        }
+                                        else {
+                                            var datatable = $("#example").DataTable();
+                                            data_row = {
+                                                'status': 'creating',
+                                                'uptime': null,
+                                                'name': param['tsRoleName'],
+                                                'resource_id': null,
+                                                'disk_idle': null,
+                                                'cpu_idle': null,
+                                                'tag': param['tag'],
+                                                'pub_ip': null,
+                                                'mem_idle': null,
+                                                'id': data['message'],
+                                                'priv_ip': null,
+                                            }
+                                            datatable.row.add(data_row).draw(false);
+                                            var rows = datatable.rows().data();
+                                            var row1Index = 0;
+                                            var row2Index = datatable.rows()[0].length - 1;
+                                            var row1Data = datatable.row(row1Index).data();
+                                            var row2Data = datatable.row(row2Index).data();
+                                            datatable.row(row1Index).data(row2Data);
+                                            datatable.row(row2Index).data(row1Data);
+                                            datatable.draw(false);
+                                            if ($("#example").find('tr').eq(1)) var tr_obj = $("#example").find('tr').eq(1);
+                                            query_ts_role_status(data['message'], tr_obj);
+                                            refreshTable();
+                                        }
+                                    },
+                                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                        alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                                        return;
+                                    }
+                                });
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                            $(".page_error").show();
+                            return;
+                        }
+                    });
+                }
+                else {
+                    $(".page_error").show();
+                    return;
+                }
+            });
+
+            $("#idcList").change(function() {
+                $("#refresh_role").trigger("click");
+            });
+
+//            $("#add_config").click(function (){
+//                var text = '<div style="display: table;width: 100%"><div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Name:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_name" style="display: table-cell;width: 90%;" type="text" placeholder="input config file name"> </div> <div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Path:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_path" style="display: table-cell;width: 90%;" type="text" placeholder="input config path"> </div><div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Dowload URL:&nbsp;&nbsp;&nbsp;&nbsp;</div><input class="config_url" style="display: table-cell;width: 90%;" type="text" placeholder="input config download url"> <a id="add_config" href="javascript:void(0)" class="btn-floating waves-effect waves-light light blue" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">+</a></div>'
+//                $(this).parent().parent().append(text);
+//                $(this).parent().children('#add_config').remove();
+//                init_add();
+//            });
+
+//            function init_add() {
+//                $("#add_config").click(function () {
+//                    var text = '<div style="display: table;width: 100%"><div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Name:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_name" style="display: table-cell;width: 90%;" type="text" placeholder="input config file name"> </div> <div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Path:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_path" style="display: table-cell;width: 90%;" type="text" placeholder="input config path"> </div><div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Dowload URL:&nbsp;&nbsp;&nbsp;&nbsp;</div><input class="config_url" style="display: table-cell;width: 90%;" type="text" placeholder="input config download url"> <a id="add_config" href="javascript:void(0)" class="btn-floating waves-effect waves-light light blue" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">+</a></div>'
+//                    $(this).parent().parent().append(text);
+//                    $(this).parent().children('#add_config').remove();
+//                    init_add();
+//                })
+//            }
+
+            function requireOption(node){
+                if(node){
+                    var ret = 1;
+                    var childs = node.children().children().children("li");
+                    var str = "select";
+                    var err = null;
+                    for (var i = 0;i < childs.length; i++){
+                        if (childs[i].className.match(str)) {
+                            if ($(childs[i]).find("select"))
+                                if (!$(childs[i]).find("select")[0].selectedIndex){
+                                    ret = 0;
+                                    if(err = $(childs[i]).find(".systemNameError"))
+                                        err[0].style.display = "inline";
+                                }
+                        }
+                    }
+                    return ret;
+                }
+            }
+
+            function initPage() {
+                $(document).ready(function(){
+                    $('.modal-trigger').leanModal();
+                });
+                $("#v_role_id").val($("#RoleId").val());
+                $("#v_role_name").val($("#RoleId option:selected").attr("data-name"));
+                $("#RoleId").change(function () {
+                    $("#v_role_id").val($("#RoleId").val());
+                    $("#v_role_name").val($("#RoleId option:selected").attr("data-name"));
+                    if ($("#RoleId").val() == '0') set_btn_disabled($("#upgrade_role"));
+                });
+
+                $("#v_domain").val($("#ts_domain").val());
+                $("#ts_domain").change(function () {
+                    $("#v_domain").val($("#ts_domain").val());
+                });
+                $("#v_project").val(window.location.pathname.split('/')[1]);
+                $(".get_data").hide();
+                page_has_error = false;
+            }
+
+            var redisGroup = [];
+            var flag = "0";
+            var isok = 0;
+
+            $("#upgrade_role").click(function () {
+                $.blockUI({ message: '<h1>请稍后...</h1>' });
+                page_has_error = false;
+                $(".page_error").hide();
+                $(".project_name").text($("#v_project").val());
+                $("#branchOption").empty();
+                var html = '<option value="" disabled selected> --- Choose project first ---</option>';
+                $("#branchOption").append(html);
+                $("#tagOption").empty();
+                var html = '<option value="" disabled selected> --- Choose branch first ---</option>';
+                $("#tagOption").append(html);
+                var domain = $("#ts_domain option:selected").text();
+                var project = $("#v_project").val();
+                var role = $("#RoleId option:selected").attr("data-name");
+                $.ajax({
+                    type: 'HTTP',
+                    method: 'GET',
+                    url: '{{ tag_server_url }}/branch/' + project + '/' + domain + '/' + role,
+                    success: function (data) {
+                        console.log(data);
+                        if (data['status'] || data['message'].length == 0) {
+                            page_error('get data error');
+                            $(".page_error").show();
+                            $.unblockUI();
+                            return;
+                        }
+                        $("#branchOption").empty();
+                        var branchlist = data['message'];
+                        var html = '<option value="" disabled selected> --- Choose your branch ---</option>';
+                        for (var i = 0; i < branchlist.length; i++) {
+                            html += '<option value="' + branchlist[i]['branch'] + '"><a>' + branchlist[i]['branch'] + '</a></option>';
+                        }
+                        $("#branchOption").append(html);
+                        $.unblockUI();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                        $(".page_error").show();
+                        $.unblockUI();
+                        return;
+                    }
+                });
+            });
+
+            $("#branchOption").change(function() {
+                $.blockUI({ message: '<h1>请稍后...</h1>' });
+                page_has_error = false;
+                $(".page_error").hide();
+                var domain = $("#ts_domain option:selected").text();
+                var project = $("#v_project").val();
+                var role = $("#RoleId option:selected").attr("data-name");
+                var branch = $("#branchOption").val();
+                $.ajax({
+                    type: 'HTTP',
+                    method: 'GET',
+                    url: '{{ tag_server_url }}/tag/list/' + project + '/' + domain + '/' + role + '/' + branch + '?limit=10',
+                    success: function (data) {
+                        console.log(data);
+                        if (data['status'] || data['message'].length == 0) {
+                            page_error('get data error');
+                            $(".page_error").show();
+                            $.unblockUI();
+                            return;
+                        }
+                        $("#tagOption").empty();
+                        var taglist = data['message'];
+                        var html = '<option value="" disabled selected> --- Choose your tag ---</option>';
+                        for (var i = 0; i < taglist.length; i++) {
+                            html += '<option value="' + taglist[i]['tag'] + '"><a>' + 'Tag:' + taglist[i]['tag'] + '   Commit Time:' + taglist[i]['commit_time'] + '</a></option>';
+                        }
+                        $("#tagOption").append(html);
+                        $.unblockUI();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        page_error(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                        $(".page_error").show();
+                        $.unblockUI();
+                        return;
+                    }
+                });
+            });
+        </script>
+    <!--Role List-->
+    <table id="example" class="display" border="0" cellspacing="0" cellpadding="0" style="padding-top: 32px;">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select_all" /></th>
+                <th>RoleName</th>
+                <th>PrivateIp</th>
+                <th>PublicIp</th>
+                <th>Tags</th>
+                <th style="width:120px;">Uptime</th>
+                <th style="width:50px;">CpuIdle</th>
+                <th style="width:50px;">MemIdle</th>
+                <th style="width:50px;">DiskIdle</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+    </table>
+    <script type="text/javascript">
+        var data=[{'vm_name': '', 'flavor': "","image": "", "cluster_name": "","cluster_id":"","create_time": "", "end_time": "","status":"","rangion":"","network":"","line":"","broadband":"","group":"","idc":"","cluster":"","instance_id":""}];
+        var showdata = [];
+        var domain_id = $("#ts_domain").eq(document.getElementById("ts_domain").selectedIndex).val();
+        var role_id = $("#RoleId").val();
+        var selectToOperaList = [];
+        query_roleList(role_id);
+        $("#select_all").on("click", function() {
+            selectToOperaList = [];
+            $("#example_next").on("click", function() {
+                $("#select_all").prop("checked", false);
+            });
+            if($("#select_all").is(":checked")) {
+                $(".select_role_box").addClass("selected");
+                $(".select_role_box").each(function () {
+                    $(this).prop("checked", true);
+                    $(this).addClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), true);
+                });
+            } else {
+                $(".select_role_box").removeClass("selected");
+                $(".select_role_box").each(function () {
+                    $(this).prop("checked",false);
+                    $(this).removeClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), false);
+                });
+            }
+            setButtonStatus();
+            if ($("#RoleId").val() == '0') set_btn_disabled($("#upgrade_role"));
+            console.log(selectToOperaList);
+            if (selectToOperaList.length == 0) setALLbtnDisabled();
+        });
+
+        init_table_func();
+        function refreshTable() {
+            $("#refresh_role").trigger("click");
+        }
+        function init_rolelist_table(data) {
+            var table = $('#example').DataTable({
+                "data": data,
+                "lengthChange": false,
+                "retrieve": true,
+                "bDestroy": true,
+                "bPaginate" : true,
+                "bProcessing" : true,
+                "sPaginationType": "simple",
+                "sInfo": false,
+                "bAutoWidth": false,
+                "searching":false,
+//                "aaSorting": [ [1,  'asc'] ],
+                "aaSorting": [],
+                "columns": [
+                    {
+                        "sClass": "text-center",
+                        "data": "id",
+                        "render": function (a, b, c) {
+                            if(c['status'] == 'starting' || c['status'] == 'stopping' || c['status'] == 'upgrading' || c['status'] == 'restarting') {
+                                return '<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>';
+                            } else {
+                                return '<input type="checkbox" class="select_role_box" />';
+                            }
+                        },
+                        "bSortable": false
+                    },
+                    {
+                        "data": "name",
+                        "render": function(e,a,b) {
+                            return '<a class="vm_detail" data-ts_roleId="'+b.id+'" href="javascript:void(0)">'+e+'</a>';
+                        }
+                    },
+                    { "data": "priv_ip",
+                      "render": function(e) {
+                          if(e) {
+                            return e;
+                          } else {
+                            return "-";
+                          }
+                      }
+                    },
+                    { "data": "pub_ip",
+                      "render": function(e) {
+                          if(e) {
+                            return e;
+                          } else {
+                            return "-";
+                          }
+                      }
+                    },
+                    { "data": "tag" },
+                    { "data": "uptime" },
+                    {
+                        "data": "cpu_idle",
+                        "render": function (e) {
+                            if (e < 0.2){
+                                return "-";
+                            } else {return e + '%'}
+                        }
+                    },
+                    {
+                        "data": "mem_idle",
+                        "render": function (e) {
+                            if (e < 0.2) {
+                                return "-";
+                            } else {
+                                return e + '%'
+                            }
+                        }
+                    },
+                    {
+                        "data": "disk_idle",
+                        "render": function (e) {
+                            if (e < 0.2) {
+                                return "-";
+                            } else {
+                                return e + '%'
+                            }
+                        }
+                    },
+                    {
+                        "data": "status",
+                        "render": function (e) {
+                            return refresh_status_column(e);
+                        }
+                    }
+                ]
+            });
+            table.draw(false);
+            init_table_func();
+        }
+        $(".paginate_button").on("click", function() {
+            init_table_func();
+        });
+
+        function init_table_func() {
+            //select_role_box click function define
+            $(".select_role_box").unbind();
+            $(".select_role_box").on("click",function() {
+                if($(this).hasClass("selected")) {
+                    $(this).removeClass("selected");
+                    $("#select_all").attr("checked",false);
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), false);
+                } else {
+                    $(this).addClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), true);
+                }
+                setButtonStatus();
+                console.log(selectToOperaList);
+                if (selectToOperaList.length == 0) setALLbtnDisabled();
+                if ($("#RoleId").val() == '0') set_btn_disabled($("#upgrade_role"));
+            });
+            $(".vm_detail").on("click",function() {
+                $('#modal3').openModal();
+                init_vertical_table($(this).parents("tr"));
+            });
+            $(".cancel").on("click", function() {
+                oriPage();
+            });
+            $(".closeCreateModal").on("click", function() {
+                $(".cancel").trigger("click");
+            });
+            for(var i = 0; i < $("#example tr").length; i++) {
+                if($("#example tr").eq(i).find("td").eq(6).text().toLowerCase() == 'error') {
+                    $("#example tr").eq(i).find("td").eq(6).css({'color':"red"});
+                }
+            }
+        }
+        function init_vertical_table(obj) {
+            var item_data_json = {
+                'cluster_id': obj.find('td').eq(1).find("a").attr("data-clusterid"),
+                'instance_id': obj.find('td').eq(1).find("a").attr("data-instanceId")
+            };
+            $.ajax({
+                'type':'HTTP',
+                'method':'GET',
+                'data':item_data_json,
+                'url':'/vm/queryDetail',
+                success:function(req){
+                    console.log(req);
+                    var detail_date='';
+                    var responseData = [];
+                    if(req['created_time']) {
+                        var year = req['created_time'].split("T")[0];
+                        var hour = req['created_time'].split("T")[1].split("Z")[0];
+                        detail_date = year + " " + hour;
+                    } else {
+                        detail_date=dataFormat(new Date());
+                    }
+                    if(req['fault']) {
+                        responseData = [req['vm_name'],req['hostname'],req['flavor_name'],req['image_name'],detail_date,req['status'],req['host_ip'],req['private_ip'],req['floating_ip'],obj.find('td').eq(1).find("a").attr("data-instanceId"),req['fault']];
+                    } else {
+                        responseData = [req['vm_name'],req['hostname'],req['flavor_name'],req['image_name'],detail_date,req['status'],req['host_ip'],req['private_ip'],req['floating_ip'],obj.find('td').eq(1).find("a").attr("data-instanceId")];
+                    }
+                    for(var i = 0; i < responseData.length; i++) {
+                        if(i == 10) {
+                            set_vertical_table(i,responseData[i],true);
+                        } else {
+                            set_vertical_table(i,responseData[i],false);
+                        }
+                    }
+                },
+                error:function(){
+                    console.log("Query failed!");
+                }
+            });
+        }
+        function set_vertical_table(index,data,flag) {
+            if(index == 5) {
+                if(data.toLowerCase() == 'active') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#06C290;" data-status="active">运行中</span>');
+                } else if(data.toLowerCase() == 'deleting') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#9D9D9D;" data-status="deleting">删除中</span>');
+                } else if(data.toLowerCase() == 'creating') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#088BFC;" data-status="creating">创建中</span>');
+                } else if(data.toLowerCase() == 'shutoff') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#ED5812;" data-status="shutoff">已关机</span>');
+                } else if(data.toLowerCase() == 'starting') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#43E00F;" data-status="starting">开机中</span>');
+                } else if(data.toLowerCase() == 'stopping') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#9D9D9D;" data-status="stopping">关机中</span>');
+                }
+            } else {
+                $("#vertical_table tr").eq(index).find("td").eq(1).text(data);
+            }
+            if(flag) {
+                $("#vertical_table tr").eq(index).find("td").eq(1).css("color","red");
+                $("#vertical_table tr").eq(10).show();
+            } else {
+                $("#vertical_table tr").eq(10).hide();
+            }
+        }
+
+        $("#start_role").click(function() {
+            if($(this).hasClass("disabled")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                start_role_func(selectToOperaList[i]);
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                query_ts_role_status(selectToOperaList[i]['ts_roleId'], selectToOperaList[i]["objself"]);
+            }
+        });
+        $("#stop_role").click(function() {
+            if($(this).hasClass("disabled")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                stop_role_func(selectToOperaList[i]);
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                query_ts_role_status(selectToOperaList[i]['ts_roleId'], selectToOperaList[i]["objself"]);
+            }
+        });
+        $("#restart_role").click(function() {
+            if($(this).hasClass("disabled")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                restart_role_func(selectToOperaList[i]);
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                query_ts_role_status(selectToOperaList[i]['ts_roleId'], selectToOperaList[i]["objself"]);
+            }
+        });
+        $("#refresh_role").click(function() {
+            setALLbtnDisabled();
+            $(".select_role_box").attr("checked",false);
+            $("#select_all").attr("checked",false);
+            $(".select_role_box").removeClass("selected");
+            selectToOperaList = [];
+            query_roleList(role_id);
+        });
+
+        function set_btn_disabled(btn){
+            btn.addClass("disabled");
+            btn.removeClass("waves-effect");
+        }
+
+        function set_btn_enable(btn){
+            btn.addClass("waves-effect");
+            btn.removeClass("disabled");
+        }
+
+        function selectToOpera(ts_roleId, obj, objself, operationType) {
+            if(operationType) {
+                var obj = {
+                    "ts_roleId": ts_roleId,
+                    "self": obj,
+                    "objself": objself
+                }
+                selectToOperaList.push(obj);
+            } else {
+                for(var i = 0; i < selectToOperaList.length; i++) {
+                    if(ts_roleId == selectToOperaList[i]['ts_roleId']) {
+                        selectToOperaList.splice(i,1);
+                    }
+                }
+            }
+        }
+
+//      set selete,start,stop,restart,upgrade button disabled
+        function setALLbtnDisabled() {
+            set_btn_disabled($("#start_role"));
+            set_btn_disabled($("#stop_role"));
+            set_btn_disabled($("#delete_role"));
+            set_btn_disabled($("#restart_role"));
+            set_btn_disabled($("#upgrade_role"));
+        }
+
+        function setALLbtnEnabled() {
+            set_btn_enable($("#start_role"));
+            set_btn_enable($("#stop_role"));
+            set_btn_enable($("#delete_role"));
+            set_btn_enable($("#restart_role"));
+            set_btn_enable($("#upgrade_role"));
+        }
+
+        function setButtonStatus() {
+            setALLbtnDisabled();
+            for(var i = 0; i < $(".selected").length; i++) {
+                var statusFlag = $(".selected").eq(i).parents("tr").find("td").eq(9).find("span").attr("data-status").toLowerCase();
+                if(statusFlag == "stopped" || statusFlag == "stopping") {
+                    set_btn_enable($("#start_role"));
+                    set_btn_enable($("#delete_role"));
+                    set_btn_enable($("#upgrade_role"));
+                }
+                else if (statusFlag == "running" || statusFlag == "starting"){
+                    set_btn_enable($("#stop_role"));
+                } else {
+                    setALLbtnDisabled();
+                    return;
+                }
+            }
+        }
+
+        function start_role_func(objList) {
+            ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+            if( ori_status == 'running' || ori_status == 'starting') {
+                console.log('already running or starting');
+                return;
+            }
+            var item_data_json = {
+                'ts_roleId': objList['ts_roleId']
+            };
+            objList["objself"].find("td").eq(9).html('<span style="color:#43E00F;" data-status="starting">starting</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/e-invoice/action/start',
+                'data':item_data_json,
+                success:function(req){
+                    if (req['status']) alert(req['message']);
+                },
+                error:function(){
+                    alert("start failed!");
+                }
+            });
+        }
+
+        function stop_role_func(objList) {
+            ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+            if( ori_status == 'stopped' || ori_status == 'stopping') {
+                return;
+            }
+            var item_data_json = {
+                'ts_roleId': objList['ts_roleId']
+            };
+            objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="stopping">stopping</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/e-invoice/action/stop',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    if (req['status']) alert(req['message']);
+                },
+                error:function(){
+                    alert("stop failed!");
+                }
+            });
+        }
+
+        var timer;
+        function query_ts_role_status(_tsroleid, obj) {
+            obj.find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            timer = setTimeout( function () {
+                $.ajax({
+                    type:'HTTP',
+                    method:'GET',
+                    url:'/ts/data/tsrole/status/' + _tsroleid,
+                    success:function(data){
+                        console.log(data['message']);
+                        if(!data['status'] && !$.isEmptyObject(data['message'])) {
+                            var data = data['message'];
+                            console.log(data);
+                            var status = data['status'];
+                            if (status == 'unknown') {
+                                query_ts_role_status(_tsroleid, obj);
+                                return;
+                            }
+                            else {
+                                clearTimeout(timer);
+                                console.log(obj);
+                                obj.find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                                if (status == 'stopped' || status == 'stopping'){
+                                    obj.find("td").eq(9).html('<span style="background-color:#E8C545; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="' + status +'">' + status + '</span>')
+                                }
+                                else if (status == 'running'){
+                                    obj.find("td").eq(9).html('<span style="background-color:#06C290; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="' + status +'">' + status + '</span>')
+                                }
+                                set_row_data(obj, data);
+                                return;
+                            }
+                        }
+                        else {
+                            query_ts_role_status(_tsroleid, obj);
+                            return;
+                        }
+                    },
+                    error:function(){
+                        console.log("stop failed!");
+                    }
+                });
+            }, 5000);
+        }
+
+        function restart_role_func(objList) {
+            ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+            if( ori_status == 'starting' || ori_status == 'stopping' || ori_status == 'restarting') {
+                return;
+            }
+            var item_data_json = {
+                'ts_roleId': objList['ts_roleId']
+            };
+            objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="restarting">restarting</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/e-invoice/action/restart',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    if (req['status'] == 0) {
+                        new_status = req['message']
+                    } else {
+                        new_status = 'unknown'
+                    }
+                    // alert('Stop VM success!');
+                    objList["objself"].find("td").eq(9).html(refresh_status_column(new_status));
+                    objList["objself"].find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                    query_ts_role_status(objList['ts_roleId'], objList["objself"]);
+                },
+                error:function(){
+                    console.log("restart failed!");
+                }
+            });
+        }
+        function upgrade_role_func(objList) {
+            console.log(objList);
+            objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="upgrading">upgrading</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            var param = {
+                'tag': $("#v_tag").val(),
+                'branch': $("#v_branch").val(),
+                'ts_roleId': objList['ts_roleId'],
+                'restart': $("#v_restart").val(),
+                'image': $("#v_download_url").val(),
+            }
+            console.log(param);
+            $.ajax({
+                type: 'HTTP',
+                method: 'POST',
+                url: '/ts/upgrade/tsRole',
+                dataType: 'json',
+                data: JSON.stringify(param),
+                success:function(req){
+                    if (req['status']) alert(req['message']);
+                },
+                error:function(){
+                    alert("upgrade failed!");
+                }
+            });
+        }
+
+        function set_row_data (obj, data){
+            if (data['priv_ip'])
+                obj.find("td").eq(2).html(data['priv_ip']);
+            else obj.find("td").eq(2).html('-');
+            if (data['pub_ip'])
+                obj.find("td").eq(3).html(data['pub_ip']);
+            else obj.find("td").eq(3).html('-');
+            if (data['uptime'])
+                obj.find("td").eq(5).html(data['uptime']);
+            else obj.find("td").eq(5).html('-');
+            if (data['cpu_idle'])
+                obj.find("td").eq(6).html(data['cpu_idle'] + '%');
+            else obj.find("td").eq(6).html('-');
+            if (data['mem_idle'])
+                obj.find("td").eq(7).html(data['mem_idle'] + '%');
+            else obj.find("td").eq(7).html('-');
+            if (data['disk_idle'])
+                obj.find("td").eq(8).html(data['disk_idle'] + '%');
+            else obj.find("td").eq(8).html('-');
+            return;
+        }
+
+        function oriPage() {
+            $(".tab_server").hide();
+            $(".modal-content").show();
+            $(".modal-content").children().show();
+            $(".systemNameError").hide();
+            $(".get_data").hide();
+            $(".page_error").hide();
+            pageIndex = 0;
+            show_first_page_btns();
+            init_value();
+            init_create();
+            $(".get_data").hide();
+            page_has_error = false;
+            var modal_head = $(".modal-head")
+            if (modal_head) {
+                for (var i = 0; i < modal_head.length; i++){
+                    $(modal_head[i]).children("ol").find(".btn-floating").removeClass("light-blue darken-3");
+                    $($(modal_head[i]).children("ol").find(".btn-floating")[0]).addClass("light-blue darken-3");
+                }
+            }
+        }
+
+        function dataFormat(date) {
+            var year = date.getFullYear();
+            var month = date.getMonth()+1;
+            var day = date.getDate();
+            var hour = date.getHours();
+            var minute = date.getMinutes();
+            var second = date.getSeconds();
+            if(month < 10) {
+                month = "0"+month;
+            }
+            if(day < 10) {
+                day = "0"+day;
+            }
+            if(hour < 10) {
+                hour = "0"+hour;
+            }
+            if(minute < 10) {
+                minute = "0"+minute;
+            }
+            if(second < 10) {
+                second = "0"+second;
+            }
+            var resultTime = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
+            return resultTime;
+        }
+        function formatDate(date) {
+            var now = new Date(date);
+            dataFormat(now);
+        }
+        // refresh status column css
+        function refresh_status_column (e) {
+            if (e == null) {
+                return '<span style="color:#E81212;" data-status="unknown">unknown</span>';
+            } else if (e.toLowerCase() == "creating") {
+                return '<span style="background-color:#2a87e4; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="critical">creating</span>';
+            } else if (e.toLowerCase() == "running") {
+                return '<span style="background-color:#06C290; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="running">running</span>';
+            } else if (e.toLowerCase() == "starting") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="starting">starting</span>';
+            } else if (e.toLowerCase() == "restarting") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="restarting">restarting</span>';
+            } else if (e.toLowerCase() == "stopping") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="stopping">stopping</span>';
+            } else if (e.toLowerCase() == "upgrading") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="upgrading">upgrading</span>';
+            } else if (e.toLowerCase() == "stopped") {
+                return '<span style="background-color:#E8C545; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="stopped">stopped</span>';
+            } else if (e.toLowerCase() == "fatal") {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="fatal">fatal</span>';
+            } else if (e.toLowerCase() == "error") {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="error">error</span>';
+            } else if (e.toLowerCase() == "critical") {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="critical">critical</span>';
+            } else {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="unknown">unknown</span>';
+            }
+        }
+        function query_roleList (role_type_id){
+            var project = $("#v_project").val();
+            $.ajax({
+                'type':'HTTP',
+                'method':'GET',
+                'url':'/getRoleList/' + project +'/' + domain_id + '/' + role_type_id,
+                success: function(resp) {
+                    if(resp['status'] != 0){
+                        console.log('Get role list error: ' + resp['message']);
+                    }else {
+                        console.log(data);
+                        data = resp['message'];
+                        init_rolelist_table(data);
+                    }
+                },
+                error: function() {
+                    console.log("Query Role List Error!");
+                }
+            });
+        }
+        $("#RoleId").change(function() {
+            role_id = $("#RoleId").val();
+            refreshTable();
+        });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <title>List</title>
+        </meta>
+        <!--<link type="text/css" rel="stylesheet" href="/static/css/style.css" />-->
+        <!--<link type="text/css" rel="stylesheet" href="/static/css/materialize.css"/>-->
+        <link type="text/css" rel="stylesheet" href="/static/css/nouislider.min.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/jquery.dataTables.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/smartMenu.css" />
+    </head>
+    <body>
+    <!--虚拟机详细信息表格-->
+    <div id="modal3" class="modal bottom-sheet">
+        <!--详情-->
+        <table id="vertical_table" class="display dataTable no-footer" style="margin-top:6%;width:96%;border-bottom:1px solid #DDDDDD">
+            <tr role="row" class="odd"><td colspan="2">虚拟机名称</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">主机名</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">主机类型</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">操作系统</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">创建时间</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">状态</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">宿主机IP</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">内网IP</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">公网IP</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">实例ID</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">错误信息</td><td></td></tr>
+        </table>
+    </div>
+
+    <!--创建虚拟机-->
+    <ul id="role_operation_box">
+        <li style="float:left;margin-left:0.5%"><a id="create_role" class="modal-trigger waves-effect waves-light btn" style="padding:0px 10px;font-size:xx-small;text-align:center;background-color:#319BE6;width:110px;height:30px;line-height:30px;" href="#create_services"><i class="material-icons left" style="margin-right:7px;line-height:30px;">note_add</i>Create</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="delete_role" href="javascript:void(0)" class="waves-effect waves-light btn" style="font-size:xx-small;width:100px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">delete</i>Delete</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="start_role" href="javascript:void(0)" class="ts-role-action waves-effect waves-light btn" style="font-size:xx-small;width:100px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">play_arrow</i>Start</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="stop_role" href="javascript:void(0)" class="waves-effect waves-light btn" style="font-size:xx-small;width:100px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">stop</i>Stop</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="restart_role" href="javascript:void(0)" class="waves-effect waves-light btn" style="font-size:xx-small;width:110px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">swap_vertical_circle</i>Restart</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="refresh_role" href="javascript:void(0)" class="waves-effect waves-light btn" style="font-size:xx-small;width:110px;"><i class="material-icons left" style="margin-right:7px;line-height:30px;">loop</i>Refresh</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="upgrade_role" class="modal-trigger waves-effect waves-light btn" style="padding:0px 10px;font-size:xx-small;text-align:center;background-color:firebrick;width:110px;height:30px;line-height:30px;" href="#upgradeRole"><i class="material-icons left" style="margin-right:7px;line-height:30px;">assignment</i>Upgrade</a></li>
+    </ul>
+
+    <div id="create_services" class="modal modal-fixed-footer" style="min-width:750px;">
+        <!--头部-->
+        <div class="modal-head" style="width:100%;height:80px;background-color:#424242;">
+            <div>
+                <a class="closeCreateModal btn-floating waves-effect waves-light grey darken-1" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">X</a>
+            </div>
+            <ol style="margin-left:24%;padding:0 0;">
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_num btn-floating light-blue darken-3">1</span><br/>
+                    <span style="font-size:10px;" class="vm_title">配置选择</span>
+                </li>
+                <li style="width:250px;margin-top:10px;">
+                    <hr />
+                </li>
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_create_title vm_num btn-floating">2</span><br/>
+                    <span style="font-size:10px;" class="vm_title">Confirmation</span>
+                </li>
+            </ol>
+        </div>
+        <!--第一页-->
+        <div class="modal-content" style="display:block;height:calc(100% - 120px);">
+            <div id="vm_pro" class="tab_list tab_server">
+                <ul class="shop_list">
+                    <li class="list">
+                        <label class="shop_list_tit">*选择集群:</label>
+                        <div id="clusterlist" class="shop_ui_block ui_block_75 shop_list_con"></div>
+                    </li>
+
+                    <!--选择内核-->
+                    <li class="list">
+                        <label class="shop_list_tit">*CPU:</label>
+                        <div id="kernal" class="shop_ui_block ui_block_75 shop_list_con"></div>
+                    </li>
+
+                    <!--选择内存-->
+                    <li class="list">
+                        <label class="shop_list_tit">*内存:</label>
+                        <div id="memory" class="shop_ui_block ui_block_75 shop_list_con"></div>
+                    </li>
+
+                    <!--选择硬盘-->
+                    <li class="list">
+                        <label class="shop_list_tit">*硬盘:</label>
+                        <div id="disk" class="shop_ui_block ui_block_75 shop_list_con"></div>
+                    </li>
+
+                    <!--添加配置文件-->
+                    <li class="list">
+                        <div class="config" style="width: 100%;min-height: 30px;">
+                            <div style="display: table;width: 100%">
+                                <div style="display: table-cell;width: 170px;text-align: right; color:#757a81">
+                                    *Config Name:&nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                                <input class="config_name" style="display: table-cell;width: 90%;" type="text" placeholder="input config file name">
+                            </div>
+                            <div style="display: table;width: 100%">
+                                <div style="display: table-cell;width: 170px;text-align: right; color:#757a81">
+                                    *Config Path:&nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                                <input class="config_path" style="display: table-cell;width: 90%;" type="text" placeholder="input config path">
+                            </div>
+                            <div style="display: table;width: 100%">
+                                <div style="display: table-cell;width: 170px;text-align: right; color:#757a81">
+                                    *Config Dowload URL:&nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                                <input class="config_url" style="display: table-cell;width: 90%;" type="text" placeholder="input config download url">
+                                <a id="add_config" href="javascript:void(0)" class="btn-floating waves-effect waves-light light blue" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">+</a>
+                            </div>
+                        </div>
+                    </li>
+
+
+                    <li class="list select">
+                        <label class="shop_list_tit" style="margin-top:0.5%">
+                            *操作系统:
+                        </label>
+                        <div class="shop_list_con" style="padding-left: 200px;">
+                            <div class="os_sel_sys">
+                                <span style="width:293px;" class="ui_dropmenu select_s osorimglist">
+                                    <select id="systemName" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;" name="systemName">
+                                        <option>--请选择--</option>
+                                    </select>
+                                    <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                    <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--第二页-->
+        <div id="confirm_create" class="tab_list tab_server" style="display: none;height:calc(100% - 120px);overflow: scroll;width: 100%">
+            <ul class="shop_list" style="margin-left:2%">
+                <li><p>test</p></li>
+            </ul>
+        </div>
+
+        <div class="modal-footer">
+            <a id="create" href="javascript:void(0);" style="border:1px solid #DBDCDF;background-color:#358BF2;color:#ffffff" class="create modal-action waves-effect waves-green btn-flat">创建</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="next modal-action waves-effect waves-green btn-flat">下一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="front modal-action waves-effect waves-green btn-flat">上一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;" class="cancel modal-close modal-action waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+
+    {#        upgrade modal#}
+    <div id="upgradeRole" class="modal modal-fixed-footer" style="min-width:750px;">
+        <!--头部-->
+        <div class="modal-head" style="width:100%;height:80px;background-color:#424242;">
+            <div>
+                <a class="closeCreateModal btn-floating waves-effect waves-light grey darken-1" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">X</a>
+            </div>
+            <ol style="margin-left:25%;padding:0 0;">
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_num btn-floating light-blue darken-3">1</span><br/>
+                    <span style="font-size:10px;" class="vm_title">Tag Option</span>
+                </li>
+                <li style="width:250px;margin-top:10px;">
+                    <hr />
+                </li>
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;color: #ffffff;" class="vm_num btn-floating">2</span><br/>
+                    <span style="font-size:10px;" class="vm_title">Confirmation</span>
+                </li>
+            </ol>
+        </div>
+        <!--first page-->
+        <div class="modal-content" style="display:block;height:calc(100% - 120px);">
+            <div id="role_tag" class="tab_list tab_server" style="overflow: auto;">
+                <ul class="shop_list">
+
+                    <li class="list select">
+                        <label class="shop_list_tit" style="margin-top:0.5%">
+                            *Project:
+                        </label>
+                        <div class="shop_list_con" style="padding-left: 200px;">
+                            <div class="os_sel_sys">
+                                <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                    <select id="projectOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName">
+                                        <option>----Chose your tags----</option>
+                                    </select>
+                                    <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                    <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list select">
+                        <label class="shop_list_tit" style="margin-top:0.5%">
+                            *Branch:
+                        </label>
+                        <div class="shop_list_con" style="padding-left: 200px;">
+                            <div class="os_sel_sys">
+                                <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                    <select id="branchOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName">
+                                        <option>----Chose your tags----</option>
+                                    </select>
+                                    <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                    <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list select">
+                        <label class="shop_list_tit" style="margin-top:0.5%">
+                            *Version Tag:
+                        </label>
+                        <div class="shop_list_con" style="padding-left: 200px;">
+                            <div class="os_sel_sys">
+                                <span style="width:600px;" class="ui_dropmenu select_s osorimglist">
+                                    <select id="tagOption" class="ui_form_select select_native_s select_native_net" style="height:38px;color:black;width: 400px" name="systemName">
+                                        <option>----Chose your tags----</option>
+                                    </select>
+                                    <!-- <i id="systemNameDone" class=" create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#21BA45;">done</i> -->
+                                    <i class="systemNameError create_servicesFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!--autorestart or not-->
+                    <li class="list">
+                        <label class="shop_list_tit">*Need Restart:</label>
+                        <div class="shop_list_con" style="padding-left: 200px;">
+                            <div id="need_restart">
+                                <span>
+                                    <input id="r1" name="need_restart_option" type="radio" value="1"/>
+                                    <label for="r1">Yes</label>
+                                    <input id="r0" name="need_restart_option" type="radio" value="0" checked/>
+                                    <label for="r0">No</label>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div id="confirm_upgrade" class="tab_list tab_server" style="display: none;height:calc(100% - 120px);overflow: scroll;width: 100%">
+            <ul class="shop_list">
+                <li><p>no info</p></li>
+            </ul>
+        </div>
+
+        <div class="modal-footer">
+            <a id="upgrade" href="javascript:void(0);" style="border:1px solid #DBDCDF;background-color:#358BF2;color:#ffffff" class="create modal-action waves-effect waves-green btn-flat">更新</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="next modal-action waves-effect waves-green btn-flat">下一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="front modal-action waves-effect waves-green btn-flat">上一页</a>
+            <a href="javascript:void(0);" style="border:1px solid #DBDCDF;" class="cancel modal-close modal-action waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <input id="v_domain" type="hidden" value="0">
+    <input id="v_project" type="hidden" value="0">
+    <input id="v_branch" type="hidden" value="0">
+    <input id="v_tag" type="hidden" value="0">
+    <input id="v_restart" type="hidden" value="0">
+        <script src="/static/js/nouislider.min.js"></script>
+        <script type="text/javascript">
+            if(window.parent.window.document.getElementById("loading_container")) {
+                window.parent.window.document.getElementById("loading_container").style.display = "none";
+            }
+            $(document).ready(function(){
+                $('.modal-trigger').leanModal();
+            });
+            var need_pub = 0;
+            var regionlist = [];
+            var taglist = [];
+            initPage();
+            function show_last_page_btns(){
+                $(".create").show();
+                $(".next").hide();
+                $(".front").show();
+                $(".cancel").hide();
+            }
+            function show_first_page_btns(){
+                $(".create").hide();
+                $(".next").show();
+                $(".front").hide();
+                $(".cancel").show();
+            }
+            function show_middle_page_btns(){
+                $(".create").hide();
+                $(".next").show();
+                $(".front").show();
+                $(".cancel").hide();
+            }
+            var pageIndex = 0;
+            if (!pageIndex) {
+                show_first_page_btns();
+            }
+            $("select").change(function() {
+                $(this).parent().children(".systemNameError").hide();
+            });
+            $(".next").click(function() {
+                if ($("#role_tag").is(":visible")) {
+                    upgrade_value();
+                    console.log($("#v_project").val());
+                    console.log($("#v_domain").val());
+                    console.log($("#v_branch").val());
+                    console.log($("#v_tag").val());
+                    console.log($("#v_restart").val());
+                }
+                var pages = $(this).parent().parent().children("div");
+                var pagesNum = pages.length - 2;
+                pageIndex++;
+                if(pageIndex == 1) pageIndex++;
+                if(pageIndex == 2) {
+                    if(!requireOption($(pages[pageIndex - 1]))) {
+                        pageIndex = 0;
+                        return;
+                    }
+                }
+                $(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating").removeClass("light-blue darken-3");
+//                console.log(pageIndex);
+//                console.log($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pagesNum - 1]);
+                $(".tab_server").hide();
+                if(pageIndex >= pagesNum) {
+                    show_last_page_btns();
+                    $(pages[pagesNum]).show();
+                    $($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pagesNum - 1]).addClass("light-blue darken-3");
+                    return;
+                }
+                else {
+                    show_middle_page_btns();
+                    $(pages[pageIndex]).show();
+                    $($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pageIndex - 1]).addClass("light-blue darken-3");
+                    return;
+                }
+            });
+
+            $(".front").click(function() {
+                $(".tab_server").hide();
+                var pages = $(this).parent().parent().children("div");
+                pageIndex--;
+                $(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating").removeClass("light-blue darken-3");
+                if(pageIndex < 1) {
+                    pageIndex = 1;
+                }
+                if(pageIndex == 1) {
+                    show_first_page_btns();
+                } else {
+                    show_middle_page_btns();
+                }
+                $(pages[pageIndex]).children().show();
+                $(pages[pageIndex]).show();
+                $($(this).parent().parent().children(".modal-head").children("ol").find(".btn-floating")[pageIndex- 1]).addClass("light-blue darken-3");
+            });
+            
+            function upgrade_value() {
+                $("#v_domain").val($("#ts_domain").val());
+                $("#v_project").val($("#projectOption").val());
+                $("#v_role").val($("#roleOption").val());
+                $("#v_branch").val($("#branchOption").val());
+                $("#v_tag").val($("#tagOption").val());
+                $("#v_restart").val($('input[name=need_restart_option]:checked').val());
+                $("#confirm_upgrade").find(".shop_list").empty();
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Poject:</p></div><div class="li_value"><p class="li_value">' + $("#projectOption option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Domain:</p></div><div class="li_value"><p class="li_value">' + $("#ts_domain option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Branch:</p></div><div class="li_value"><p class="li_value">' + $("#branchOption option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Tag:</p></div><div class="li_value"><p class="li_value">' + $("#tagOption option:selected").text() + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+                var restart_str = "";
+                if($('input[name=need_restart_option]:checked').val()) {
+                    restart_str = "YES";
+                }
+                else {
+                    restart_str = "NO";
+                }
+                var html = '<li class="list"><div class="ul_table"><div class="li_row"><div class="li_title"><p class="li_title">*Restart:</p></div><div class="li_value"><p class="li_value">' + restart_str + '</p></div></div></div></li>';
+                $("#confirm_upgrade").find(".shop_list").append(html);
+            }
+
+//            function ()
+
+            function init_value() {
+                $("#v_domain").val("0");
+                $("#v_project").val("0");
+                $("#v_role").val("0");
+                $("#v_branch").val("0");
+                $("#v_tag").val("0");
+                $("#v_restart").val("0");
+            }
+
+            $("#regionlist").on("change",function() {
+                $.ajax({
+                    'type':'HTTP',
+                    'method':'GET',
+                    'url':'/getIdcReg'+'/'+$("#regionlist").val(),
+                    success: function(resp) {
+                        regionlist=[];
+                        $("#idclist").empty();
+                        regionlist=resp['message'];
+                        var html = "<option>--请选择--</option>";
+                        for(var i = 0; i < regionlist.length; i++) {
+                            html += "<option data-name='"+regionlist[i]['name']+"'>"+regionlist[i]['detail']+"</option>";
+                        }
+                        $("#idclist").append(html);
+                    }
+                });
+            })
+            $("#upgrade").click(function () {
+                for(var i = 0; i < selectToOperaList.length; i++) {
+                    upgrade_role_func(selectToOperaList[i]);
+                }
+                $(".closeCreateModal").trigger("click");
+            });
+            $("#idcList").change(function() {
+                $("#refresh_role").trigger("click");
+                createTagList();
+            });
+            $("#select_key").change(function() {
+                dataRevi("select_key","data-value");
+            });
+            $("#systemName").change(function() {
+                dataRevi("systemName");
+            });
+            $("#addKey").click(function() {
+                var addKeyData = {
+                    'cluster_id': $('#clusterlist .b_selected').find("span").attr("data-id"),
+                    'key_name': $('#keyName').val(),
+                    'key_content': $('#id_public_key').val()
+                }
+                $.ajax({
+                    'type': 'HTTP',
+                    'method': 'POST',
+                    'url': '/addKey',
+                    'data': addKeyData,
+                    success: function(resp) {
+                        $("#addSecrity").closeModal();
+                        getKeyList();
+                        setTimeout(function(){
+                            $("#select_key").val($('#keyName').val());
+                        },100);
+                    }
+                });
+            });
+
+            $("#add_config").click(function (){
+                var text = '<div style="display: table;width: 100%"><div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Name:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_name" style="display: table-cell;width: 90%;" type="text" placeholder="input config file name"> </div> <div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Path:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_path" style="display: table-cell;width: 90%;" type="text" placeholder="input config path"> </div><div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Dowload URL:&nbsp;&nbsp;&nbsp;&nbsp;</div><input class="config_url" style="display: table-cell;width: 90%;" type="text" placeholder="input config download url"> <a id="add_config" href="javascript:void(0)" class="btn-floating waves-effect waves-light light blue" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">+</a></div>'
+                $(this).parent().parent().append(text);
+                $(this).parent().children('#add_config').remove();
+                init_add();
+            });
+
+            function init_add() {
+                $("#add_config").click(function () {
+                    var text = '<div style="display: table;width: 100%"><div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Name:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_name" style="display: table-cell;width: 90%;" type="text" placeholder="input config file name"> </div> <div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Path:&nbsp;&nbsp;&nbsp;&nbsp;</div> <input class="config_path" style="display: table-cell;width: 90%;" type="text" placeholder="input config path"> </div><div style="display: table;width: 100%"> <div style="display: table-cell;width: 170px;text-align: right; color:#757a81"> *Config Dowload URL:&nbsp;&nbsp;&nbsp;&nbsp;</div><input class="config_url" style="display: table-cell;width: 90%;" type="text" placeholder="input config download url"> <a id="add_config" href="javascript:void(0)" class="btn-floating waves-effect waves-light light blue" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">+</a></div>'
+                    $(this).parent().parent().append(text);
+                    $(this).parent().children('#add_config').remove();
+                    init_add();
+                })
+            }
+
+            function requireOption(node){
+                if(node){
+                    var ret = 1;
+                    var childs = node.children().children().children("li");
+                    var str = "select";
+                    var err = null;
+                    for (var i = 0;i < childs.length; i++){
+                        if (childs[i].className.match(str)) {
+                            if ($(childs[i]).find("select"))
+                                if (!$(childs[i]).find("select")[0].selectedIndex){
+                                    ret = 0;
+                                    if(err = $(childs[i]).find(".systemNameError"))
+                                        err[0].style.display = "inline";
+                                }
+                        }
+                    }
+                    return ret;
+                }
+            }
+
+            function getKeyList() {
+                var getListData = {
+                    'cluster_id': $('#clusterlist .b_selected span').attr("data-id")
+                }
+                var keyList = [];
+                $.ajax({
+                    'type': 'HTTP',
+                    'method': 'GET',
+                    'data': getListData,
+                    'url':'/getKeyList',
+                    success: function(resp) {
+                        keyList = [];
+                        keyList = resp['content'];
+                        $("#select_key").empty();
+                        console.log(keyList);
+                        var html = "<option>--请选择--</option>";
+                        if(keyList.length==0) {
+                            $("#select_key").append("<option>没有数据</option>");
+                        } else {
+                            for(var i = 0; i < keyList.length; i++) {
+                                html+="<option value='"+ keyList[i]['name'] +"' data-value='"+ keyList[i]['public_key'] +"'>"+keyList[i]['name']+"</option>";
+                            }
+                        }
+                        $("#select_key").append(html);
+                    }
+                });
+            }
+            function initPage() {
+                $("#flavor").hide();
+                for(var i = $("#regionlist option").length-1; i > -1; i--) {
+                    if($("#regionlist option").eq(i).val() == $("#regionlist option").eq(i-1).val()) {
+                        $("#regionlist option").eq(i).remove();
+                    }
+                }
+                /**初始化clusterList*/
+                createTagList();
+            }
+            function checkStatus(group) {
+                for(var l = 0; l < group.length; l++) {
+                    if(group[l]['status']&&group[l]['status'].toLowerCase() == "active") {
+                        group.splice(l,1);
+                    }
+                }
+                if(group.length == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            function checkOtherStatus(group) {
+                for(var l = 0; l < group.length; l++) {
+                    if(group[l]['status']&&group[l]['status'].toLowerCase() == "shutoff") {
+                        group.splice(l,1);
+                    } else if(group[l]['status']&&group[l]['status'].toLowerCase() == "active") {
+                        group.splice(l,1);
+                    } else if(group[l]['status']&&group[l]['status'].toLowerCase() == "deleted") {
+                        group.splice(l,1);
+                    } else if(group[l]['status']&&group[l]['status'].toLowerCase() == "build") {
+                        group.splice(l,1);
+                    }
+                }
+                if(group.length == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            function setItems(longPullingNum, operation, redisGroup, instance_id) {
+                if(operation == 'create') {
+                    if(redisGroup == "timeout") {
+                        flag = true;
+                        return;
+                    }
+                    for(var j = 0; j < longPullingNum; j++) {
+                        if(instance_id == $("#example tr").eq(j+1).find("td").eq(1).find("a").attr("data-instanceid")) {
+                            if(redisGroup['private_ip']) {
+                                $("#example tr").eq(j+1).find("td").eq(4).text(redisGroup['private_ip']);
+                            }
+                            if(redisGroup['public_ip']) {
+                                $("#example tr").eq(j+1).find("td").eq(5).text(redisGroup['public_ip']);
+                            }
+                            if(redisGroup['status']) {
+                                if(redisGroup['status'].toLowerCase() == 'active') {
+                                    $("#example tr").eq(j+1).find("td").eq(6).html('<span style="color:#06C290;" data-status="active">运行中</span>');
+                                    $("#example tr").eq(j+1).find("td").eq(0).html('<input type="checkbox" class="select_role_box" />')
+                                } else if(redisGroup['status'].toLowerCase() == 'deleting') {
+                                    $("#example tr").eq(j+1).find("td").eq(6).html('<span style="color:#9D9D9D;" data-status="deleting">删除中</span>');
+                                } else if(redisGroup['status'].toLowerCase() == 'creating') {
+                                    $("#example tr").eq(j+1).find("td").eq(6).html('<span style="color:#088BFC;" data-status="creating">创建中</span>');
+                                } else if(redisGroup['status'].toLowerCase() == 'shutoff') {
+                                    $("#example tr").eq(j+1).find("td").eq(6).html('<span style="color:#ED5812;" data-status="shutoff">已关机</span>');
+                                    $("#example tr").eq(j+1).find("td").eq(0).html('<input type="checkbox" class="select_role_box" />')
+                                } else if(redisGroup['status'].toLowerCase() == 'starting') {
+                                    $("#example tr").eq(j+1).find("td").eq(6).html('<span style="color:#43E00F;" data-status="starting">开机中</span>');
+                                } else if(redisGroup['status'].toLowerCase() == 'stopping') {
+                                    $("#example tr").eq(j+1).find("td").eq(6).html('<span style="color:#9D9D9D;" data-status="stopping">关机中</span>');
+                                } else if(redisGroup['status'].toLowerCase() == 'error') {
+                                    $("#example tr").eq(j+1).find("td").eq(6).html('<span style="color:red;" data-status="error">出错</span>');
+                                    $("#example tr").eq(j+1).find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                                }
+                                if(redisGroup['status'].toLowerCase() == 'active' || redisGroup['status'].toLowerCase() == 'error') {
+                                    flag = true;
+                                    return;
+                                } else {
+                                    longPulling(longPullingNum, operation, instance_id);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    flag = true;
+                }
+                $(".select_role_box").on("click",function() {
+                    console.log('123sfsdf');
+                    console.log($(this).parents("tr").find("td").eq(1).find("a").attr("data-tsRoleId"));
+                    if($(this).hasClass("selected")) {
+                        $(this).removeClass("selected");
+                        $("#select_all").attr("checked",false);
+                        selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-tsRoleId"), $(this), $(this).parents("tr"), false);
+                    } else {
+                        $(this).addClass("selected");
+                        selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-tsRoleId"), $(this), $(this).parents("tr"), true);
+                    }
+                    setButtonStatus();
+                });
+            }
+            var redisGroup = [];
+            var flag = "0";
+            var isok = 0;
+            function longPulling(longPullingNum, operation, ts_roleId) {
+                $.ajax({
+                    "type": "HTTP",
+                    "method": "GET",
+                    "url": "/e-invoice/role/"+ts_roleId+"/status",
+                    success: function(data) {
+                        console.log("data=="+data);
+                        if(operation == 'create') {
+                            for(var i = 0; i < longPullingNum; i++) {
+                                if(instance_id == $("#example tr").eq(i+1).find("td").eq(1).find("a").attr("data-instanceid")) {
+                                    if(data['private_ip']) {
+                                        $("#example tr").eq(i+1).find("td").eq(4).text(data['private_ip']);
+                                    }
+                                    if(data['public_ip']) {
+                                        $("#example tr").eq(i+1).find("td").eq(5).text(data['public_ip']);
+                                    }
+                                    if(data['status']) {
+                                        if(data['status'].toLowerCase() == 'active') {
+                                            $("#example tr").eq(i+1).find("td").eq(6).html('<span style="color:#06C290;" data-status="active">运行中</span>');
+                                            $("#example tr").eq(i+1).find("td").eq(0).html('<input type="checkbox" class="select_role_box" />')
+                                            isok += 1;
+                                        } else if(data['status'].toLowerCase() == 'deleting') {
+                                            $("#example tr").eq(i+1).find("td").eq(6).html('<span style="color:#9D9D9D;" data-status="deleting">删除中</span>');
+                                        } else if(data['status'].toLowerCase() == 'creating') {
+                                            $("#example tr").eq(i+1).find("td").eq(6).html('<span style="color:#088BFC;" data-status="creating">创建中</span>');
+                                        } else if(data['status'].toLowerCase() == 'shutoff') {
+                                            $("#example tr").eq(i+1).find("td").eq(6).html('<span style="color:#ED5812;" data-status="shutoff">已关机</span>');
+                                            $("#example tr").eq(i+1).find("td").eq(0).html('<input type="checkbox" class="select_role_box" />')
+                                            isok += 1;
+                                        } else if(data['status'].toLowerCase() == 'starting') {
+                                            $("#example tr").eq(i+1).find("td").eq(6).html('<span style="color:#43E00F;" data-status="starting">开机中</span>');
+                                        } else if(data['status'].toLowerCase() == 'stopping') {
+                                            $("#example tr").eq(i+1).find("td").eq(6).html('<span style="color:#9D9D9D;" data-status="stopping">关机中</span>');
+                                        } else if(data['status'].toLowerCase() == 'error') {
+                                            $("#example tr").eq(i+1).find("td").eq(6).html('<span style="color:red;" data-status="error">出错</span>');
+                                            $("#example tr").eq(i+1).find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                                            isok += 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if(isok == longPullingNum) {
+                                $("#refresh_role").trigger("click");
+                            } else {
+                                longPulling(longPullingNum, operation, instance_id);
+                            }
+                        } else {
+                                for (var j in selectToOperaList) {
+                                    if (selectToOperaList[j]['ts_roleId'] == ts_roleId) {
+                                        selectToOperaList[j]["objself"].find("td").eq(9).html(refresh_status_column(data['message']));
+                                        selectToOperaList[j]["objself"].find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                                        selectToOperaList.splice(j ,1);
+                                    }
+                                }
+                            return data['message'];
+                        }
+		            },
+                    error: function(e) {
+                        console.log(e);
+                    }
+                });
+                // refresh table
+            }
+
+            function createTagList() {
+                $("#branchOption").empty();
+                var html = '<option value="" disabled selected> --- Choose project first ---</option>';
+                $("#branchOption").append(html);
+                $("#tagOption").empty();
+                var html = '<option value="" disabled selected> --- Choose branch first ---</option>';
+                $("#tagOption").append(html);
+                $.ajax({
+                    type: 'HTTP',
+                    method: 'GET',
+                    url: '/project/list',
+                    success: function (data) {
+                        $("#projectOption").empty();
+                        var projectlist = data['message'];
+                        console.log(projectlist);
+                        var html = '<option value="" disabled selected> --- Choose your project ---</option>';
+                        for (var i = 0; i < projectlist.length; i++){
+                            html+='<option value="'+ projectlist[i]["id"] + '">' + projectlist[i]["name"] + '</option>';
+                        }
+                        $("#projectOption").append(html);
+                        $("#projectOption").change(function() {
+                            var domain_id = $("#ts_domain").val();
+                            var project_id = $("#projectOption").val();
+                            $.ajax({
+                                type: 'HTTP',
+                                method: 'GET',
+                                url: '{{ tag_server_url }}/branch/' + project_id + '/' + domain_id + '/list',
+                                success: function (data) {
+                                    console.log(data);
+                                    if (data['status'] != '0') return;
+                                    $("#branchOption").empty();
+                                    var branchlist = data['message'];
+                                    console.log(branchlist);
+                                    var html = '<option value="" disabled selected> --- Choose your branch ---</option>';
+                                    for (var i = 0; i < branchlist.length; i++) {
+                                        html += '<option value="' + branchlist[i]['branch'] + '"><a>' + branchlist[i]['branch'] + '</a></option>';
+                                    }
+                                    $("#branchOption").append(html);
+                                    $("#branchOption").change(function() {
+                                        var domain_id = $("#ts_domain").val();
+                                        var project_id = $("#projectOption").val();
+                                        var branch_name = $("#branchOption").val();
+                                        $.ajax({
+                                            type: 'HTTP',
+                                            method: 'GET',
+                                            url: '{{ tag_server_url }}/tag/' + project_id + '/' + domain_id + '/' + branch_name + '?limit=10',
+                                            success: function (data) {
+                                                console.log(data);
+                                                if (data['status'] != '0') return;
+                                                $("#tagOption").empty();
+                                                var taglist = data['message'];
+                                                console.log(taglist);
+                                                var html = '<option value="" disabled selected> --- Choose your branch ---</option>';
+                                                for (var i = 0; i < taglist.length; i++) {
+                                                    html += '<option value="' + taglist[i]['tag'] + '"><a>' + 'Tag:' + taglist[i]['tag'] + '   Commit Time:' + taglist[i]['commit_time'] + '</a></option>';
+                                                }
+                                                $("#tagOption").append(html);
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        </script>
+    <!--Role List-->
+    <table id="example" class="display" border="0" cellspacing="0" cellpadding="0" style="padding-top: 32px;">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select_all" /></th>
+                <th>RoleName</th>
+                <th>PrivateIp</th>
+                <th>PublicIp</th>
+                <th>Tags</th>
+                <th style="width:120px;">Uptime</th>
+                <th style="width:50px;">CpuIdle</th>
+                <th style="width:50px;">MemIdle</th>
+                <th style="width:50px;">DiskIdle</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+    </table>
+    <script type="text/javascript">
+        var data=[{'vm_name': '', 'flavor': "","image": "", "cluster_name": "","cluster_id":"","create_time": "", "end_time": "","status":"","rangion":"","network":"","line":"","broadband":"","group":"","idc":"","cluster":"","instance_id":""}];
+        var showdata = [];
+        var domain_id = $("#ts_domain").eq(document.getElementById("ts_domain").selectedIndex).val();
+        var role_id = $("#RoleId").val();
+        var selectToOperaList = [];
+        query_roleList(role_id);
+        $("#select_all").on("click", function() {
+            $("#example_next").on("click", function() {
+                $("#select_all").prop("checked", false);
+            });
+            if($("#select_all").is(":checked")) {
+                $(".select_role_box").addClass("selected");
+                $(".select_role_box").each(function () {
+                    $(this).prop("checked", true);
+                    $(this).addClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), true);
+                });
+            } else {
+                $(".select_role_box").removeClass("selected");
+                $(".select_role_box").each(function () {
+                    $(this).prop("checked",false);
+                    $(this).removeClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), false);
+                });
+            }
+            setButtonStatus();
+        });
+        var create_btn_flag = true;
+        var intervalIndex = 0;
+        $("#create").on("click",function() {
+            if(!dataRevi("select_key", "data-value")) {
+                return;
+            }
+            var idc = $("#idcList option").eq(document.getElementById("idcList").selectedIndex).attr("data-name"),
+                cluster = $("#clusterlist .b_selected").find("span").attr("data-name"),
+                image_name = $("#systemName option").eq(document.getElementById("systemName").selectedIndex).attr("uuid"),
+                flavor_name = flavoruuid,
+                image_id = $("#systemName option").eq(document.getElementById("systemName").selectedIndex).attr("data-id"),
+                flavor_id = flavorid,
+                user = 'admin',
+                key_content = $("#select_key option").eq(document.getElementById("select_key").selectedIndex).attr("data-value"),
+                key_name = $("#select_key").val(),
+                osName = $("#systemName option").eq(document.getElementById("systemName").selectedIndex).attr("data-os"),
+                create_vm_num = parseInt($("#cvm_buy_size").val());
+            var oriListlen = showdata.length;
+            if(create_btn_flag) {
+                create_btn_flag = false;
+                for(var i = 1; i < create_vm_num+1; i++) {
+                    var data = {
+                        'idc':idc,
+                        'cluster':cluster,
+                        'cluster_id':$("#clusterlist .b_selected").find("span").attr("data-id"),
+                        'image_name':image_name,
+                        'flavor_name':flavor_name,
+                        'user':user,
+                        'need_pub':need_pub,
+                        'image_id':image_id,
+                        'flavor_id':flavor_id,
+                        'key_content': key_content,
+                        'key_name': key_name,
+                        'osName': osName
+                    };
+                    var url = "/vm/create/createfunc";
+                    $.ajax({
+                        "type":"HTTP",
+                        "method":"POST",
+                        "data":data,
+                        "url":url,
+                        success: function(data) {
+                            $('#create_services').closeModal();
+                            var resp = JSON.parse(data);
+                            var instance_id = resp.result.instance_id;
+                            var vm_name = resp.result.vm_name;
+                            var time = resp.result.create_time;
+                            var private_ip = '';
+                            var public_ip = '';
+                            var data = {'vm_name': vm_name, 'flavor': flavorname,"image": $("#systemName").val(),"cluster_id":$("#clusterlist .b_selected span").attr("data-id"), "cluster_name": $("#clusterlist .b_selected span").text(),"create_time": time, "end_time": "","status":"creating","rangion":"","network":"","line":"","broadband":"","group":"","idc":idc,"cluster":cluster,"instance_id":instance_id,"private_ip":private_ip,"public_ip":public_ip};
+                            showdata.push(data);
+                            if(showdata.length-oriListlen == create_vm_num) {
+                                oriPage();
+                                console.log("Done!");
+                            }
+                            $("#example").dataTable().fnDestroy();
+                            init_rolelist_table(showdata);
+                            $("#refresh_role").trigger("click");
+                            setTimeout(function(){
+                                create_btn_flag = true;
+                            },1000);
+                            setTimeout(function() {
+                                longPulling(create_vm_num, 'create', instance_id);
+                            },2000);
+                        },
+                        error: function(err) {
+                            console.log(err);
+                            create_btn_flag = true;
+                        }
+                    });
+                }
+                // intervalIndex = window.setInterval('refreshTable()',8000);
+            } else {
+                console.log("创建过快,请稍后再试！");
+            }
+        });
+        init_table_func();
+        function refreshTable() {
+            $("#refresh_role").trigger("click");
+        }
+        function init_rolelist_table(data) {
+            var table = $('#example').dataTable({
+                "data": data,
+                "lengthChange": false,
+                "retrieve": true,
+                "destroy": true,
+                "bPaginate" : true,
+                "bProcessing" : true,
+                "sPaginationType": "simple",
+                "sInfo": false,
+                "bAutoWidth": false,
+                "searching":false,
+                "aaSorting": [ [1,'asc'] ],
+                "columns": [
+                    {
+                        "sClass": "text-center",
+                        "data": "id",
+                        "render": function (a, b, c) {
+                            if(c['status'] == 'starting' || c['status'] == 'stopping' || c['status'] == 'upgrading' || c['status'] == 'restarting') {
+                                return '<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>';
+                            } else {
+                                return '<input type="checkbox" class="select_role_box" />';
+                            }
+                        },
+                        "bSortable": false
+                    },
+                    {
+                        "data": "name",
+                        "render": function(e,a,b) {
+                            return '<a class="vm_detail" data-ts_roleId="'+b.id+'" href="javascript:void(0)">'+e+'</a>';
+                        }
+                    },
+                    { "data": "priv_ip",
+                      "render": function(e) {
+                          if(e) {
+                            return e;
+                          } else {
+                            return "-";
+                          }
+                      }
+                    },
+                    { "data": "pub_ip",
+                      "render": function(e) {
+                          if(e) {
+                            return e;
+                          } else {
+                            return "-";
+                          }
+                      }
+                    },
+                    { "data": "tag" },
+                    { "data": "uptime" },
+                    {
+                        "data": "cpu_idle",
+                        "render": function (e) {
+                            if (e < 0.2){
+                                return '<span style="color:#F50606;">' + e*100 + ' %</span>';
+                            } else {return e*100 + '%'}
+                        }
+                    },
+                    {
+                        "data": "mem_idle",
+                        "render": function (e) {
+                            if (e < 0.2) {
+                                return '<span style="color:#F50606;">' + e * 100 + ' %</span>';
+                            } else {
+                                return e * 100 + '%'
+                            }
+                        }
+                    },
+                    {
+                        "data": "disk_idle",
+                        "render": function (e) {
+                            if (e < 0.2) {
+                                return '<span style="color:#F50606;">' + e * 100 + ' %</span>';
+                            } else {
+                                return e * 100 + '%'
+                            }
+                        }
+                    },
+                    {
+                        "data": "status",
+                        "render": function (e) {
+                            return refresh_status_column(e);
+                        }
+                    }
+                ]
+            });
+            init_table_func();
+        }
+        $(".paginate_button").on("click", function() {
+            init_table_func();
+        });
+        $("#cvm_buy_size").keyup(function(){
+            var regex = /[^\d]*/g;
+            var numVal = $(this).val();
+            numVal = numVal.replace(regex,"");
+            numVal = parseInt(numVal) || 1;
+            numVal = numVal < 1? 1 : numVal;
+            $(this).val(numVal);
+        });
+        function init_table_func() {
+            $(".select_role_box").on("click",function() {
+                if($(this).hasClass("selected")) {
+                    $(this).removeClass("selected");
+                    $("#select_all").attr("checked",false);
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), false);
+                } else {
+                    $(this).addClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), true);
+                }
+                setButtonStatus();
+            });
+            $(".vm_detail").on("click",function() {
+                $('#modal3').openModal();
+                init_vertical_table($(this).parents("tr"));
+            });
+            $(".cancel").on("click", function() {
+                oriPage();
+            });
+            $(".closeCreateModal").on("click", function() {
+                $(".cancel").trigger("click");
+            });
+            for(var i = 0; i < $("#example tr").length; i++) {
+                if($("#example tr").eq(i).find("td").eq(6).text().toLowerCase() == 'error') {
+                    $("#example tr").eq(i).find("td").eq(6).css({'color':"red"});
+                }
+            }
+        }
+        function init_vertical_table(obj) {
+            var item_data_json = {
+                'cluster_id': obj.find('td').eq(1).find("a").attr("data-clusterid"),
+                'instance_id': obj.find('td').eq(1).find("a").attr("data-instanceId")
+            };
+            $.ajax({
+                'type':'HTTP',
+                'method':'GET',
+                'data':item_data_json,
+                'url':'/vm/queryDetail',
+                success:function(req){
+                    console.log(req);
+                    var detail_date='';
+                    var responseData = [];
+                    if(req['created_time']) {
+                        var year = req['created_time'].split("T")[0];
+                        var hour = req['created_time'].split("T")[1].split("Z")[0];
+                        detail_date = year + " " + hour;
+                    } else {
+                        detail_date=dataFormat(new Date());
+                    }
+                    if(req['fault']) {
+                        responseData = [req['vm_name'],req['hostname'],req['flavor_name'],req['image_name'],detail_date,req['status'],req['host_ip'],req['private_ip'],req['floating_ip'],obj.find('td').eq(1).find("a").attr("data-instanceId"),req['fault']];
+                    } else {
+                        responseData = [req['vm_name'],req['hostname'],req['flavor_name'],req['image_name'],detail_date,req['status'],req['host_ip'],req['private_ip'],req['floating_ip'],obj.find('td').eq(1).find("a").attr("data-instanceId")];
+                    }
+                    for(var i = 0; i < responseData.length; i++) {
+                        if(i == 10) {
+                            set_vertical_table(i,responseData[i],true);
+                        } else {
+                            set_vertical_table(i,responseData[i],false);
+                        }
+                    }
+                },
+                error:function(){
+                    console.log("Query failed!");
+                }
+            });
+        }
+        function set_vertical_table(index,data,flag) {
+            if(index == 5) {
+                if(data.toLowerCase() == 'active') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#06C290;" data-status="active">运行中</span>');
+                } else if(data.toLowerCase() == 'deleting') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#9D9D9D;" data-status="deleting">删除中</span>');
+                } else if(data.toLowerCase() == 'creating') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#088BFC;" data-status="creating">创建中</span>');
+                } else if(data.toLowerCase() == 'shutoff') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#ED5812;" data-status="shutoff">已关机</span>');
+                } else if(data.toLowerCase() == 'starting') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#43E00F;" data-status="starting">开机中</span>');
+                } else if(data.toLowerCase() == 'stopping') {
+                    $("#vertical_table tr").eq(index).find("td").eq(1).html('<span style="color:#9D9D9D;" data-status="stopping">关机中</span>');
+                }
+            } else {
+                $("#vertical_table tr").eq(index).find("td").eq(1).text(data);
+            }
+            if(flag) {
+                $("#vertical_table tr").eq(index).find("td").eq(1).css("color","red");
+                $("#vertical_table tr").eq(10).show();
+            } else {
+                $("#vertical_table tr").eq(10).hide();
+            }
+        }
+        $("#delete_vm").click(function() {
+            if(!confirm("确认删除？")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                delete_vm_func(selectToOperaList[i]);
+            }
+        });
+        $("#start_role").click(function() {
+            if($(this).hasClass("disabled")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                start_role_func(selectToOperaList[i]);
+            }
+        });
+        $("#stop_role").click(function() {
+            if($(this).hasClass("disabled")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                stop_role_func(selectToOperaList[i]);
+            }
+        });
+        $("#restart_role").click(function() {
+            if($(this).hasClass("disabled")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                restart_role_func(selectToOperaList[i]);
+            }
+        });
+        $("#refresh_role").click(function() {
+            checkStatus([]);
+            $("#start_role").removeClass("disabled");
+            $("#stop_role").removeClass("disabled");
+            $("#delete_role").removeClass("disabled");
+            $("#restart_role").removeClass("disabled");
+            $("#delete_role").addClass("waves-effect");
+            $("#start_role").addClass("waves-effect");
+            $("#stop_role").addClass("waves-effect");
+            $("#restart_role").addClass("waves-effect");
+            selectToOperaList = [];
+            query_roleList(role_id);
+        });
+        $("#upgrade_role").click(function() {
+            if($(this).hasClass("disabled")) {
+                return;
+            }
+        });
+        $(".select_role_box").on("click",function() {
+            if($(this).hasClass("selected")) {
+                $(this).removeClass("selected");
+                $("#select_all").attr("checked",false);
+                selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), false);
+            } else {
+                $(this).addClass("selected");
+                selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-ts_roleId"), $(this), $(this).parents("tr"), true);
+            }
+            setButtonStatus();
+        });
+        function selectToOpera(ts_roleId, obj, objself, operationType) {
+            if(operationType) {
+                var obj = {
+                    "ts_roleId": ts_roleId,
+                    "self": obj,
+                    "objself": objself
+                }
+                selectToOperaList.push(obj);
+            } else {
+                for(var i = 0; i < selectToOperaList.length; i++) {
+                    if(ts_roleId == selectToOperaList[i]['ts_roleId']) {
+                        selectToOperaList.splice(i,1);
+                    }
+                }
+            }
+        }
+        function setButtonStatus() {
+            $("#delete_role").removeClass("disabled");
+            $("#start_role").removeClass("disabled");
+            $("#stop_role").removeClass("disabled");
+            $("#restart_role").removeClass("disabled");
+            $("#upgrade_role").removeClass("disabled");
+            $("#delete_role").addClass("waves-effect");
+            $("#start_role").addClass("waves-effect");
+            $("#stop_role").addClass("waves-effect");
+            $("#restart_role").addClass("waves-effect");
+            $("#upgrade_role").addClass("waves-effect");
+            for(var i = 0; i < $(".selected").length; i++) {
+                var statusFlag = $(".selected").eq(i).parents("tr").find("td").eq(9).find("span").attr("data-status").toLowerCase();
+                if(statusFlag == "stopped" || statusFlag == "stopping") {
+                    $("#stop_role").addClass("disabled");
+                    $("#stop_role").removeClass("waves-effect");
+                }
+                if(statusFlag == "running" || statusFlag == "starting") {
+                    $("#start_role").addClass("disabled");
+                    $("#start_role").removeClass("waves-effect");
+                }
+                if(statusFlag == "deleting") {
+                    $("#delete_role").addClass("disabled");
+                    $("#delete_role").removeClass("waves-effect");
+                }
+            }
+        }
+        function delete_vm_func(objList) {
+            var item_data_json = {
+                'cluster_id': objList['cluster_id'],
+                'instance_id': objList['instance_id']
+            };
+            console.log(item_data_json);
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/vm/deleteVm',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    if(req.status=="OK") {
+                        // $(".selected").parents("tr").hide();
+                        objList["objself"].find("td").eq(6).html('<span style="color:#9D9D9D;" data-status="deleting">删除中</span>');
+                        objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+                        longPulling(1, 'delete', objList['instance_id']);
+                    } else {
+                        console.log(req.message);
+                    }
+                },
+                error:function(e){
+                    console.log("delete failed!");
+                }
+            });
+        }
+        function start_role_func(objList) {
+            ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+            if( ori_status == 'running' || ori_status == 'starting') {
+                console.log('already running or starting');
+                return;
+            }
+            var item_data_json = {
+                'ts_roleId': objList['ts_roleId']
+            };
+            objList["objself"].find("td").eq(9).html('<span style="color:#43E00F;" data-status="starting">starting</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/e-invoice/action/start',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    objList["objself"].find("td").eq(9).html(longPulling(1, 'start', objList['ts_roleId']));
+                },
+                error:function(){
+                    console.log("start failed!");
+                }
+            });
+        }
+        function stop_role_func(objList) {
+            ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+            if( ori_status == 'stopped' || ori_status == 'stopping') {
+                return;
+            }
+            var item_data_json = {
+                'ts_roleId': objList['ts_roleId']
+            };
+            objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="stopping">stopping</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/e-invoice/action/stop',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    // alert('Stop VM success!');
+                    if (req['status'] == 0) {
+                        new_status = req['message']
+                    } else {
+                        new_status = 'unknown'
+                    }
+                    longPulling(1, 'stop', objList['ts_roleId']);
+                },
+                error:function(){
+                    console.log("stop failed!");
+                }
+            });
+        }
+        function restart_role_func(objList) {
+            ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+            if( ori_status == 'starting' || ori_status == 'stopping' || ori_status == 'restarting') {
+                return;
+            }
+            var item_data_json = {
+                'ts_roleId': objList['ts_roleId']
+            };
+            objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="restarting">restarting</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/e-invoice/action/restart',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    if (req['status'] == 0) {
+                        new_status = req['message']
+                    } else {
+                        new_status = 'unknown'
+                    }
+                    // alert('Stop VM success!');
+                    objList["objself"].find("td").eq(9).html(refresh_status_column(new_status));
+                    objList["objself"].find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                },
+                error:function(){
+                    console.log("restart failed!");
+                }
+            });
+        }
+        function upgrade_role_func(objList) {
+            ori_status = objList["objself"].find("td").eq(9).find("span").attr("data-status").toLowerCase();
+            if( ori_status == 'starting' || ori_status == 'stopping' || ori_status == 'restarting') {
+                return;
+            }
+            var item_data_json = {
+                'ts_roleId': objList['ts_roleId']
+            };
+            objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="restarting">restarting</span>');
+            objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/e-invoice/action/restart',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    if (req['status'] == 0) {
+                        new_status = req['message']
+                    } else {
+                        new_status = 'unknown'
+                    }
+                    // alert('Stop VM success!');
+                    objList["objself"].find("td").eq(9).html(refresh_status_column(new_status));
+                    objList["objself"].find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                },
+                error:function(){
+                    console.log("restart failed!");
+                }
+            });
+        }
+
+        function oriConfig() {
+            for (var i = 0; i < $(".config").children().length - 3; i++) {
+                $(".config").children()[0].remove();
+            }
+        }
+
+        function oriPage() {
+            $(".tab_server").hide();
+            oriSelect(["systemName", "select_key"]);
+            $(".modal-content").show();
+            $(".modal-content").children().show();
+            $("#flavor").hide();
+            $(".systemNameError").hide();
+            pageIndex = 0;
+            show_first_page_btns();
+            createTagList();
+            oriConfig();
+            oriConfig();
+            init_value();
+            var modal_head = $(".modal-head")
+            if (modal_head) {
+                for (var i = 0; i < modal_head.length; i++){
+                    $(modal_head[i]).children("ol").find(".btn-floating").removeClass("light-blue darken-3");
+                    $($(modal_head[i]).children("ol").find(".btn-floating")[0]).addClass("light-blue darken-3");
+                }
+            }
+        }
+        function oriSelect(domIdGroup) {
+            for(var i = 0; i < domIdGroup.length; i++) {
+                if (!document.getElementById(domIdGroup[i])) continue;
+                document.getElementById(domIdGroup[i]).selectedIndex = 0;
+            }
+        }
+        function dataFormat(date) {
+            var year = date.getFullYear();
+            var month = date.getMonth()+1;
+            var day = date.getDate();
+            var hour = date.getHours();
+            var minute = date.getMinutes();
+            var second = date.getSeconds();
+            if(month < 10) {
+                month = "0"+month;
+            }
+            if(day < 10) {
+                day = "0"+day;
+            }
+            if(hour < 10) {
+                hour = "0"+hour;
+            }
+            if(minute < 10) {
+                minute = "0"+minute;
+            }
+            if(second < 10) {
+                second = "0"+second;
+            }
+            var resultTime = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
+            return resultTime;
+        }
+        function formatDate(date) {
+            var now = new Date(date);
+            dataFormat(now);
+        }
+        // refresh status column css
+        function refresh_status_column (e) {
+            if (e == null) {
+                return '<span style="color:#E81212;" data-status="unknown">unknown</span>';
+            }
+            else if (e.toLowerCase() == "running") {
+                return '<span style="background-color:#06C290; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="running">running</span>';
+            } else if (e.toLowerCase() == "starting") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="starting">starting</span>';
+            } else if (e.toLowerCase() == "restarting") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="restarting">restarting</span>';
+            } else if (e.toLowerCase() == "stopping") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="stopping">stopping</span>';
+            } else if (e.toLowerCase() == "upgrading") {
+                return '<span style="background-color:#ED5812; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="upgrading">upgrading</span>';
+            } else if (e.toLowerCase() == "stopped") {
+                return '<span style="background-color:#E8C545; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="stopped">stopped</span>';
+            } else if (e.toLowerCase() == "fatal") {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="fatal">fatal</span>';
+            } else if (e.toLowerCase() == "error") {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="error">error</span>';
+            } else if (e.toLowerCase() == "critical") {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="critical">critical</span>';
+            } else {
+                return '<span style="background-color:#E81212; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="unknown">unknown</span>';
+            }
+        }
+        function query_roleList (role_type_id){
+            $.ajax({
+            'type':'HTTP',
+            'method':'GET',
+            'url':'/getRoleList/e-invoice/' + domain_id + '/' + role_type_id,
+            success: function(resp) {
+                if(resp['status'] != 0){
+                    console.log('Get role list error: ' + resp['message']);
+                }else {
+                    data = resp['message'];
+                                    console.log(data);
+                    showdata = data;
+                    init_rolelist_table(data);
+                }
+            },
+            error: function() {
+                console.log("Query Role List Error!");
+            }
+        });
+        }
+        $("#RoleId").change(function() {
+        role_id = $("#RoleId").val();
+        refreshTable();
+        });
+    </script>
+    </body>
+</html>

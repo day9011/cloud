@@ -1,0 +1,56 @@
+@-webkit-keyframes dot {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    background: #4b9cdb;
+  }
+  50% {
+    transform: translateY(20px) scale(0.5);
+    background: #f5fafd;
+  }
+}
+@-moz-keyframes dot {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    background: #4b9cdb;
+  }
+  50% {
+    transform: translateY(20px) scale(0.5);
+    background: #f5fafd;
+  }
+}
+@keyframes dot {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    background: #4b9cdb;
+  }
+  50% {
+    transform: translateY(20px) scale(0.5);
+    background: #f5fafd;
+  }
+}
+.loading {
+  position: relative;
+}
+.bubble {
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  background: #4b9cdb;
+  float: left;
+  -webkit-animation: dot .75s linear infinite;
+  -moz-animation: dot .75s linear infinite;
+  animation: dot .75s linear infinite;
+}
+.loading .bubble:nth-last-child(2) {
+  -webkit-animation-delay: .15s;
+  -moz-animation-delay: .15s;
+  animation-delay: .15s;
+}
+.loading .bubble:nth-last-child(3) {
+  -webkit-animation-delay: .25s;
+  -moz-animation-delay: .25s;
+  animation-delay: .25s;
+}

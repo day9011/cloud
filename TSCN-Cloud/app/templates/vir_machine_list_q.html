@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <title>List</title>
+        </meta>
+        <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/materialize.css"/>
+        <link type="text/css" rel="stylesheet" href="/static/css/nouislider.min.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/jquery.dataTables.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/smartMenu.css" />
+    </head>
+    <body>
+    <!--虚拟机详细信息表格-->
+    <div id="modal3" class="modal bottom-sheet" style="height:calc(100% - 41px);margin-top: 0px;top: 41px;">
+        <!--主机信息-->
+        <table id="vertical_table" class="display dataTable no-footer" style="width:96%;">
+            <tr><td colspan="2"><h5 style="float:left;">主机信息</h5></td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">名称</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">服务器ID</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">状态</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">公网IP</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">内网IP</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">创建时间</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">到期时间</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">地域</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">可用区</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">主机计费模式</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">网络计费模式</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">用作公网网关</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">所在子网</td><td></td></tr>
+
+            <tr><td colspan="2"><h5 style="float:left;">机器配置</h5></td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">操作系统</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">CPU</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">内存</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">系统盘</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">数据盘</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">公网宽带</td><td></td></tr>
+
+            <tr><td colspan="2"><h5 style="float:left;">系统镜像</h5></td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">镜像名称</td><td></td></tr>
+            <tr role="row" class="even"><td colspan="2">类型</td><td></td></tr>
+            <tr role="row" class="odd"><td colspan="2">镜像ID</td><td></td></tr>
+        </table>
+    </div>
+    <!--输入密钥-->
+    <div id="addSecrity" class="modal modal-fixed-footer">
+        <div class="modal-content" style="display:block">
+            <span style="font-size:20px;" class="vm_create_selected vm_title">导入密钥对</span>
+            <div class="slice"></div>
+            <div>
+                <ul class="shop_list" style="margin-left:2%">
+                    <li class="list">
+                        <label class="shop_list_tit">密钥对名称:</label>
+                        <div class="shop_ui_block ui_block_75 shop_list_con" style='width:100%'>
+                            <input id="keyName" style="width:15.5%" />
+                        </div>
+                    </li>
+                    <li class="list">
+                        <label class="shop_list_tit">公钥:</label>
+                        <div>
+                            <textarea id="id_public_key" rows="10" cols="40" name="public_key" style="margin: 0px 83px 9px; width: 50%; height: 50%;"></textarea>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div style="position:relative;top:85%">
+            <div class="slice"></div>
+            <a href="javascript:void(0);" style="position:absolute;right:95px;margin-top:1%;border:1px solid #DBDCDF;background-color:#358BF2;color:#ffffff" class="modal-action waves-effect waves-green btn-flat" id="addKey">添加</a>
+            <a id="cancelImport" href="javascript:void(0);" style="position:absolute;right:5px;margin-top:1%;border:1px solid #DBDCDF;" class="modal-close modal-action waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <!--创建虚拟机-->
+    <ul id="vm_operation_box">
+        <li style="float:left;margin-left:0.5%"><a id="create_vm" class="modal-trigger waves-effect waves-light btn" style="padding:0px 10px;text-align:center;background-color:#319BE6;width:80px;height:30px;line-height:30px;" href="#createVM"><i class="material-icons left" style="margin-right:7px;line-height:30px;">note_add</i>创建</a></li>
+        <li style="float:left;margin-left:0.5%;display:none;"><a id="delete_vm" href="javascript:void(0)" class="waves-effect waves-light btn"><i class="material-icons left" style="margin-right:7px;line-height:30px;">delete</i>删除</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="open_vm" href="javascript:void(0)" class="waves-effect waves-light btn"><i class="material-icons left" style="margin-right:7px;line-height:30px;">play_arrow</i>启动</a></li>
+        <li style="float:left;margin-left:0.5%"><a id="close_vm" href="javascript:void(0)" class="waves-effect waves-light btn"><i class="material-icons left" style="margin-right:7px;line-height:30px;">stop</i>关机</a></li>
+        <!-- <li style="float:left;margin-left:0.5%"><a id="renew_vm" href="javascript:void(0)" class="waves-effect waves-light btn"><i class="material-icons left" style="margin-right:7px;line-height:25px;">$</i>续费</a></li> -->
+        <li style="float:left;margin-left:0.5%"><a id="refresh_vm" href="javascript:void(0)" class="waves-effect waves-light btn"><i class="material-icons left" style="margin-right:7px;line-height:30px;">loop</i>刷新</a></li>
+    </ul>
+
+    <div id="createVM" class="modal modal-fixed-footer" style="min-width:750px;">
+        <!--头部-->
+        <div class="modal-head" style="width:100%;height:80px;background-color:#424242;">
+            <div>
+                <a id="closeCreateModal" class="btn-floating waves-effect waves-light grey darken-1" style="text-align:center;float:right;width:20px;height:20px;line-height:20px;margin:10px 10px;">X</a>
+            </div>
+            <ol style="margin-left:24%;padding:0 0;">
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;" class="vm_num btn-floating light-blue darken-3">1</span><br/>
+                    <span style="font-size:10px;" class="vm_create_selected vm_title">配置选择</span>
+                </li>
+                <li style="width:150px;margin-top:10px;">
+                    <hr />
+                </li>
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;" class="vm_create_title vm_num btn-floating">2</span><br/>
+                    <span style="font-size:10px;" class="vm_create_title vm_title">网络选择</span>
+                </li>
+                <li style="width:150px;margin-top:10px;">
+                    <hr />
+                </li>
+                <li>
+                    <span style="font-size:20px;text-align:center;background-color:#808080;margin-left:5px;" class="vm_create_title vm_num btn-floating">3</span><br/>
+                    <span style="font-size:10px;" class="vm_create_title vm_title">云主机设置</span>
+                </li>
+            </ol>
+        </div>
+
+        <!--中部-->
+        <div style="width:100%;height:calc(100% - 80px);position:absolute;">
+            <!--左侧-->
+            <div style="width:75%;float:left;height:100%;">
+                <!--第一页-->
+                <div class="modal-content" style="display:block;">
+                    <div id="vm_pro" class="tab_list tab_server">
+                        <ul class="shop_list">
+
+                            <!--主机类型-->
+                            <li class="list" id="cvm_dev_type_area" style="">
+                                <label class="shop_list_tit">*主机类型:</label>
+                                <div id="hostSpecies" class="shop_ui_block ui_block_75 shop_list_con">
+                                    <a data-devtype="standard" class="b_item b_item_net b_first b_selected" href="javascript:void(0);">
+                                        <span class="text">标准型</span>
+                                    </a>
+                                    <a data-devtype="standard" class="b_item b_item_net" href="javascript:void(0);">
+                                        <span class="text">高IO型</span>
+                                    </a>
+                                    <a data-devtype="standard" class="b_item b_item_net b_last" href="javascript:void(0);">
+                                        <span class="text">内存型</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                            <!--选择内核-->
+                            <li class="list" id="cvm_dev_type_area" style="">
+                                <label class="shop_list_tit">*CPU:</label>
+                                <div id="kernal" class="shop_ui_block ui_block_75 shop_list_con"></div>
+                            </li>
+
+                            <!--选择内存-->
+                            <li class="list" id="cvm_dev_type_area" style="">
+                                <label class="shop_list_tit">*内存:</label>
+                                <div id="memory" class="shop_ui_block ui_block_75 shop_list_con"></div>
+                            </li>   
+
+                            <!--系统类型-->
+                            <li class="list" id="cvm_dev_type_area" style="">
+                                <label class="shop_list_tit">*系统类型:</label>
+                                <div class="shop_ui_block ui_block_75 shop_list_con">
+                                    <a data-devtype="standard" class="b_item b_item_net b_first b_last b_selected" href="javascript:void(0);">
+                                        <span class="text">公共镜像</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                            <!--操作系统-->
+                            <li class="list osorimglist list-os">
+                                <label class="shop_list_tit" style="margin-top:0.5%">
+                                    *操作系统:
+                                </label>
+                                <div class="shop_list_con">
+                                    <div class="os_sel_sys">
+                                        <span style="width:293px;" class="ui_dropmenu select_s osorimglist">
+                                            <select id="systemName" class="ui_form_select select_native_s select_native_net" style="width:300px;height:38px;color:black;" name="systemName">
+                                                <option>--请选择--</option>
+                                            </select>
+                                            <i id="systemNameError" class=" CreateVmFlag material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!--选择硬盘-->
+                            <li class="list" id="cvm_dev_type_area" style="">
+                                <label class="shop_list_tit">*磁盘类型:</label>
+                                <div id="disk" class="shop_ui_block ui_block_75 shop_list_con">
+                                    <a data-devtype="standard" data-type="2" class="b_item b_item_net b_first b_selected" href="javascript:void(0);">
+                                        <span class="text">云磁盘</span>
+                                    </a>
+                                    <a data-devtype="standard" data-type="1" class="b_item b_item_net b_last" href="javascript:void(0);">
+                                        <span class="text">本地磁盘</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                            <!--数据盘-->
+                            <li class="list">
+                                <label class="shop_list_tit">数据盘:</label>
+                                <div class="shop_ui_block ui_block_75 shop_list_con" style="width:90%">
+                                    <div id="data_slider" class="noUi-target noUi-ltr noUi-horizontal noUi-background" style="width:45%;height:10px;margin-top:7px;float:left;"></div>
+                                    <input id="data_input" style="width:55px;margin-left:25px;" /><span>GB</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--第二页-->
+                <div id="network_sel" class="tab_list tab_server" style="display:none;margin-top:7%">
+                    <ul class="shop_list">
+                        <li class="list">
+                            <label class="shop_list_tit">公网宽带:</label>
+                            <div id="networkSelect" class="shop_ui_block ui_block_75 shop_list_con">
+                                <a data-devtype="standard" data-type="PayByBandwidth" class="b_item b_item_net b_first b_last b_selected" href="javascript:void(0);">
+                                    <span class="text">按月计费</span>
+                                </a>
+                                <!-- <a data-devtype="standard" data-type="PayByTraffic" class="b_item b_item_net b_last" href="javascript:void(0);">
+                                    <span class="text">按流量计费</span>
+                                </a> -->
+                            </div>
+                        </li>
+                        <li class="list">
+                            <label class="shop_list_tit">带宽:</label>
+                            <div class="shop_ui_block ui_block_75 shop_list_con" style="width:90%">
+                                <div id="band_slider" class="noUi-target noUi-ltr noUi-horizontal noUi-background" style="width:45%;height:10px;margin-top:7px;float:left;"></div>
+                                <input id="band_input" style="width:55px;margin-left:10px;" /><span>Mbps</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!--第三页-->
+                <div id="cvm_pro" class="tab_list tab_server" style="display:none;margin-top:7%">
+                    <ul class="shop_list" style="margin-left:2%">
+                        <li class="list">
+                            <label class="shop_list_tit">登录设置:</label>
+                            <div id="loginSet" class="shop_ui_block ui_block_75 shop_list_con">
+                                <a data-devtype="standard" class="b_item b_item_net b_first b_selected" style="width:88px;" href="javascript:void(0);">
+                                    <span class="text">立即关联密钥</span>
+                                </a>
+                                <a data-devtype="standard" class="b_item b_item_net b_last" style="width:88px;" href="javascript:void(0);">
+                                    <span class="text">自动生成密码</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="list">
+                            <label class="shop_list_tit" style="margin-top:0.5%">SSH密钥:</label>
+                            <div class="shop_ui_block ui_block_75 shop_list_con">
+                                <select id="select_key" style="width:200px;height:38px">
+                                    <option>--请选择--</option>
+                                </select>
+                                <a id="addSecri" class="modal-trigger" href="#addSecrity">现在创建</a>
+                                <i id="select_keyError" class="material-icons" style="display:none;font-size:middle;vertical-align:middle;color:#f44336;">error</i>
+                            </div>
+                        </li>
+                        <li class="list">
+                            <label class="shop_list_tit" style="margin-top:0.5%">安全组:</label>
+                            <div class="shop_ui_block ui_block_75 shop_list_con">
+                                <select id="select_Securitygroup" style="width:200px;height:38px"></select>
+                                <p style="font-size:x-small;color:#BDBDBD;">安全组具有防火墙功能，用于设置云服务器CVM的网络访问控制</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!--右侧-->
+            <div style="width:25%;float:right;height:100%;border-left:1px solid #E2E2E2;">
+                <ul class="shop_list">
+                    <li class="list">
+                        <label class="shop_list_tit">购买数量:</label>
+                        <div class="shop_list_con">
+                            <span class="shop_ui_count" id="cvm_goodsnum_op_container" style="margin-left:0.5%">
+                                <a href="javascript:void(0);" class="btn_minus" opt="sub">-</a>
+                                <input type="text" class="count_num" id="cvm_buy_size" min="1" value="1" />
+                                <a href="javascript:void(0);" class="btn_plus" opt="add">+</a>
+                            </span>台
+                        </div>
+                    </li>
+                    <li class="list">
+                        <label class="shop_list_tit" style="line-height:38px;">购买时长:</label>
+                        <div class="shop_ui_block ui_block_75 shop_list_con">
+                            <select id="select_period" style="height:38px">
+                                <option data-period="1">1个月</option>
+                                <option data-period="2">2个月</option>
+                                <option data-period="3">3个月</option>
+                                <option data-period="6">半年</option>
+                                <option data-period="12">1年</option>
+                                <option data-period="24">2年</option>
+                                <option data-period="36">3年</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="list">
+                        <label class="shop_list_tit price" style="line-height:36px;">费用:</label>
+                        <div class="shop_list_con">
+                            <span id="totalPrice" class="text price" style="color:#FF7921;font-size:x-large;">0.00元</span>
+                        </div>
+                        <div class="loadingImg shop_list_con" style="display:none;padding-left: 50px;">
+                            <image src="/static/images/top-alert-icon-doing.gif" style="float:left;" /><span class="text" style="float:left;margin-top:2px;margin-left:10px;color:#808080;font-size:14px;">正在计算价格...</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--底部-->
+        <div class="modal-footer">
+            <a id="create" href="javascript:void(0);" style="border:1px solid #DBDCDF;background-color:#358BF2;color:#ffffff" class="modal-action waves-effect waves-green btn-flat">创建</a>
+            <a id="next" href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="modal-action waves-effect waves-green btn-flat">下一页</a>
+            <a id="front" href="javascript:void(0);" style="border:1px solid #DBDCDF;display:none;" class="modal-action waves-effect waves-green btn-flat">上一页</a>
+            <a id="cancel" href="javascript:void(0);" style="border:1px solid #DBDCDF;" class="modal-close modal-action waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+        <script src="/static/js/nouislider.min.js"></script>
+        <script type="text/javascript">
+            if(window.parent.window.document.getElementById("loading_container")) {
+                window.parent.window.document.getElementById("loading_container").style.display = "none";
+            }
+            $(document).ready(function(){
+                $('.modal-trigger').leanModal();
+            });
+            var q_region = "sh";
+            var cvm_buy_size = $("#cvm_buy_size").val();
+            var kernalList = [];
+            var memoryList = {};
+            var selectToOperaList = [];
+            $("#hostSpecies a").on("click", function() {
+                $("#hostSpecies a").removeClass("b_selected");
+                $(this).addClass("b_selected");
+                if($(this).index() == 0) {
+                    kernalList = [1,2,4,8,12,16,24];
+                    memoryList = {"1": [1,2,4,12],"2": [2,4,8,12],"4": [4,8,12,16,24],"8": [8,12,16,24,32],"12": [12,16,24,32,48],"16": [16,24,32,48],"24": [60]};
+                } else if($(this).index() == 1) {
+                    kernalList = [2,4,8,12,24];
+                    memoryList = {"2": [4,8,16],"4": [4,8,16,32],"8": [8,16,24,32],"12": [24,36,48,60],"24": [120]};
+                } else {
+                    kernalList = [1,2,4,8,12,16,24,32,48];
+                    memoryList = {"1": [8],"2": [16],"4": [32],"8": [64],"12": [96],"16": [128],"24": [192],"32": [256],"48": [368]};
+                }
+                initKernalList(kernalList, memoryList);
+                $("#kernal a").eq(0).trigger("click");
+                $("#memory a").eq(0).trigger("click");
+            });
+
+
+            $("#memory a").on("click", function() {
+                $("#memory a").removeClass("b_selected");
+                $(this).addClass("b_selected");
+                countPrice();
+            });
+
+            $("#disk a").on("click", function() {
+                $("#disk a").removeClass("b_selected");
+                $(this).addClass("b_selected");
+                countPrice();
+            });
+
+	        $("#networkSelect .b_item_net").eq(0).on("click", function() {
+                $("#networkSelect .b_item_net").removeClass("b_selected");
+                $(this).addClass("b_selected");
+                countPrice();
+            });
+
+            $("#networkSelect .b_item_net").eq(1).on("click", function() {
+                $("#networkSelect .b_item_net").removeClass("b_selected");
+                $(this).addClass("b_selected");
+                countPrice();
+            });
+
+            $("#loginSet .b_item_net").on("click", function() {
+                $("#loginSet .b_item_net").removeClass("b_selected");
+                $(this).addClass("b_selected");
+            });
+
+
+            $("#select_period").on("change", function() {
+                countPrice();
+            });
+
+            if($("#cvm_pro").css("display") == "block") {
+                $("#create").show();
+                $("#next").hide();
+                $("#front").show();
+                $("#cancel").hide();
+            } else {
+                $("#create").hide();
+                $("#next").show();
+                $("#front").hide();
+                $("#cancel").show();
+            }
+            var pageIndex = 0;
+            $("#next").click(function() {
+                if(pageIndex == 0) {
+                    /**
+                    if(dataRevi() == 0) {
+                        return;
+                    }
+                    */
+                }
+                $(".tab_server").hide();
+                pageIndex++;
+                if(pageIndex > $(".tab_server").length-1) {
+                    pageIndex = $(".tab_server").length-1;
+                }
+                if(pageIndex != $(".tab_server").length-1) {
+                    $("#front").show();
+                    $("#cancel").hide();
+                } else if(pageIndex == $(".tab_server").length-1) {
+                    $("#create").show();
+                    $("#next").hide();
+                    $("#front").show();
+                    $("#cancel").hide();
+                }
+                $(".tab_server").eq(pageIndex).show();
+                $(".vm_title").removeClass("vm_create_selected");
+                $(".vm_title").addClass("vm_create_title");
+                $(".vm_title").eq(pageIndex+1).removeClass("vm_create_title").addClass("vm_create_selected");
+                $(".vm_num").removeClass("light-blue darken-3");
+                $(".vm_num").addClass("vm_create_title");
+                $(".vm_num").eq(pageIndex).removeClass("vm_create_title").addClass("light-blue darken-3");
+            });
+            $("#front").click(function() {
+                $(".tab_server").hide();
+                pageIndex--;
+                if(pageIndex < 0) {
+                    pageIndex = 0;
+                }
+                if(pageIndex > 0) {
+                    $("#front").show();
+                    $("#cancel").hide();
+                    $("#create").hide();
+                    $("#next").show();
+                } else if(pageIndex == 0) {
+                    $("#front").hide();
+                    $("#cancel").show();
+                    $("#create").hide();
+                    $("#next").show();
+                }
+                $(".tab_server").eq(pageIndex).show();
+                $(".vm_title").removeClass("vm_create_selected");
+                $(".vm_title").addClass("vm_create_title");
+                $(".vm_title").eq(pageIndex+1).removeClass("vm_create_title").addClass("vm_create_selected");
+                $(".vm_num").removeClass("light-blue darken-3");
+                $(".vm_num").addClass("vm_create_title");
+                $(".vm_num").eq(pageIndex).removeClass("vm_create_title").addClass("light-blue darken-3");
+            });
+            
+            $(".btn_plus").click(function() {
+                cvm_buy_size++;
+                $("#cvm_buy_size").val(cvm_buy_size);
+                countPrice();
+            });
+            $(".btn_minus").click(function() {
+                cvm_buy_size--;
+                if(cvm_buy_size == 0) {
+                    cvm_buy_size=1;
+                }
+                $("#cvm_buy_size").val(cvm_buy_size);
+                countPrice();
+            });
+            $("#cvm_buy_size").change(function() {
+                countPrice();
+            });
+
+            $("#select_key").change(function() {
+                //dataRevi("select_key","data-value");
+            });
+
+            $("#systemName").change(function() {
+                //dataRevi("systemName");
+                countPrice();
+            });
+
+            $("#addKey").click(function() {
+                var keyName = $("#keyName").val();
+                var pubKey = $("#id_public_key").val();
+                var data = {
+                    "keyName": keyName,
+                    "pubKey": pubKey
+                }
+                $.ajax({
+                    "type": "HTTP",
+                    "method": "POST",
+                    "url": "/importkeypair",
+                    "data": data,
+                    success: function(resp) {
+                        console.log(resp);
+                        getQKeyList();
+                        $("#addSecrity").closeModal();
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            });
+
+            var create_btn_flag = true;
+            $("#create").click(function() {
+                //必须
+                var imageId = $("#systemName option").eq(document.getElementById("systemName").selectedIndex).attr("data-unimgid");
+                var cpu = parseInt($("#kernal .b_selected").attr("kernal-value"));
+                var mem = parseInt($("#memory .b_selected").attr("data-men"));
+                var storageSize = parseInt($("#data_input").val());
+                var period = parseInt($("#select_period option").eq(document.getElementById("select_period").selectedIndex).attr("data-period"));
+                //非必需
+                var imageType = 2;
+                var bandwidth = parseInt($("#band_input").val());
+                var storageType = parseInt($("#disk .b_selected").attr("data-type"));
+                var goodsNum = parseInt($("#cvm_buy_size").val());
+                var zoneId = $("#q_zone option").eq(document.getElementById("q_zone").selectedIndex).attr("data-zoneid");
+                var keyId = $("#select_key option").eq(document.getElementById("select_key").selectedIndex).attr("data-keyid");
+
+                var data = {
+                    "imageId": imageId,
+                    "cpu": cpu,
+                    "mem": mem,
+                    "storageSize": storageSize,
+                    "period": period,
+                    "imageType": imageType,
+                    "bandwidth": bandwidth,
+                    "storageType": storageType,
+                    "goodsNum": goodsNum,
+                    "zoneId": zoneId,
+                    "keyId": keyId
+                }
+                if(create_btn_flag) {
+                    create_btn_flag = false;
+                    $.ajax({
+                        "type": "HTTP",
+                        "method": "POST",
+                        "url": "/qCreateVM",
+                        "data": data,
+                        success: function(resp) {
+                            console.log(resp);
+                            $("#createVM").closeModal();
+                            setTimeout(function(){
+                                refreshTable();
+                                create_btn_flag = true;
+                            },1000);
+                        },
+                        error: function(err) {
+                            console.log(err);
+                            create_btn_flag = true;
+                        }
+                    });
+                }
+            });
+
+            $("#create_vm").on("click", function(){
+                setTimeout(function() {
+                    $("#hostSpecies a").eq(0).trigger("click");
+                },1000);
+            });
+
+            initSlider();
+            function initSlider() {
+                var band_slider = document.getElementById('band_slider');
+                noUiSlider.create(band_slider, {
+                    start: [0,0],
+                    connect: true,
+                    step: 1,
+                    range: {
+                        'min': 0,
+                        'max': 200
+                    }
+                });
+                var band_input = document.getElementById('band_input');
+                band_slider.noUiSlider.on('update', function( values, handle ) {
+                    band_input.value = values[handle];
+                });
+                band_input.addEventListener('change', function(){
+                    band_slider.noUiSlider.set([null, this.value]);
+                    countPrice();
+                });
+
+                var data_slider = document.getElementById('data_slider');
+                noUiSlider.create(data_slider, {
+                    start: [0,0],
+                    connect: true,
+                    step: 10,
+                    range: {
+                        'min': 0,
+                        'max': 500
+                    }
+                });
+                var data_input = document.getElementById('data_input');
+                data_slider.noUiSlider.on('update', function( values, handle ) {
+                    data_input.value = values[handle];
+                });
+                data_input.addEventListener('change', function(){
+                    data_slider.noUiSlider.set([null, this.value]);
+                    countPrice();
+                });
+                $(".noUi-handle-lower").hide();
+                $(".noUi-handle-upper").on("mouseup", function() {
+                    countPrice();
+                });
+            }
+
+            function countPrice() {
+                $(".loadingImg").show();
+                $(".price").hide();
+                var price = 4500;
+                var imageId = $("#systemName option").eq(document.getElementById("systemName").selectedIndex).attr("data-unimgid");
+                var cpu = parseInt($("#kernal .b_selected").attr("kernal-value"));
+                var mem = parseInt($("#memory .b_selected").attr("data-men"));
+                var storageSize = $("#data_input").val() == '' ? 0 :parseInt($("#data_input").val());
+                var period = parseInt($("#select_period option").eq(document.getElementById("select_period").selectedIndex).attr("data-period"));
+                //非必需
+                var imageType = 2;
+                var bandwidth = parseInt($("#band_input").val());
+                var storageType = parseInt($("#disk .b_selected").attr("data-type"));
+                var goodsNum = parseInt($("#cvm_buy_size").val());
+
+                var data = {
+                    "imageId": imageId,
+                    "cpu": cpu,
+                    "mem": mem,
+                    "storageSize": storageSize,
+                    "period": period,
+                    "imageType": imageType,
+                    "bandwidth": bandwidth,
+                    "storageType": storageType,
+                    "goodsNum": goodsNum
+                }
+                $.ajax({
+                    "type": "HTTP",
+                    "method": "POST",
+                    "url": "/countPrice",
+                    "data": data,
+                    success: function(resp) {
+                        var data = eval("("+resp+")");
+                        if(data["code"] == 0) {
+                            price = data["price"];
+                            if(!price) {
+                                price = "45.00元";
+                            } else {
+                                price = (data["price"]/100).toFixed(2) + "元";
+                            }
+                            $("#totalPrice").text(price);
+                            $(".loadingImg").hide();
+                            $(".price").show();
+                        } else {
+                            console.log(data);
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            }
+
+            function dataRevi(domId, domVal) {
+                if(!domId) {
+                    var f;
+                    $(".CreateVmFlag").hide();
+                    
+                    if($("#systemName option").eq(document.getElementById("systemName").selectedIndex).attr("data-id")) {
+                        f = 1;
+                    } else {
+                        $("#systemNameError").show();
+                        f = 0;
+                    }
+                    return f;
+                } else {
+                    if(!domVal) {
+                        domVal = "data-id";
+                    }
+                    return dealFlag(domId, domVal);
+                }
+            }
+
+            function dealFlag(domId, domVal) {
+                $("#"+domId).siblings("i").hide();
+                if($("#"+domId+" option").eq(document.getElementById(domId).selectedIndex).attr(domVal)) {
+                    return true;
+                } else {
+                    $("#"+domId+"Error").show();
+                    return false;
+                }
+            }
+
+            function initKernalList(kernalList, memoryList) {
+                $("#kernal").empty();
+                for(var i = 0; i < kernalList.length; i++) {
+                    if(i == 0) {
+                        var htm = '<a data-devtype="standard" kernal-value='+kernalList[i]+' class="kernalclass b_item b_item_net b_first b_selected" href="javascript:void(0);"><span class="text">'+kernalList[i]+'核</span></a>';
+                    } else if(i == kernalList.length-1) {
+                        var htm = '<a data-devtype="standard" kernal-value='+kernalList[i]+' class="kernalclass b_item b_item_net b_last" href="javascript:void(0);"><span class="text">'+kernalList[i]+'核</span></a>';
+                    } else {
+                        var htm = '<a data-devtype="standard" kernal-value='+kernalList[i]+' class="kernalclass b_item b_item_net" href="javascript:void(0);"><span class="text">'+kernalList[i]+'核</span></a>';
+                    }
+                    
+                    $("#kernal").append(htm);
+                }
+
+                $("#kernal a").on("click", function() {
+                    $("#kernal a").removeClass("b_selected");
+                    $(this).addClass("b_selected");
+                    countPrice();
+                });
+
+                var memoryListData = memoryList;
+                $(".kernalclass").on("click", function() {
+                    var kernal = $(this).attr("kernal-value");
+                    memoryListData = memoryList[kernal];
+                    initMemoryList(memoryListData);
+                    countPrice();
+                });
+            }
+
+            function initMemoryList(memoryList) {
+                $("#memory").empty();
+                for(var i = 0; i < memoryList.length; i++) {
+                    if(i == 0) {
+                        var htm = '<a data-devtype="standard" data-men="'+memoryList[i]+'" class="b_item b_item_net b_first b_selected" href="javascript:void(0);"><span class="text">'+memoryList[i]+'G</span></a>';
+                    } else if(i == memoryList.length-1) {
+                        var htm = '<a data-devtype="standard" data-men="'+memoryList[i]+'" class="b_item b_item_net b_last" href="javascript:void(0);"><span class="text">'+memoryList[i]+'G</span></a>';
+                    } else {
+                        var htm = '<a data-devtype="standard" data-men="'+memoryList[i]+'" class="b_item b_item_net" href="javascript:void(0);"><span class="text">'+memoryList[i]+'G</span></a>';
+                    }
+                    
+                    $("#memory").append(htm);
+                }
+
+                $("#memory a").on("click", function() {
+                    $("#memory a").removeClass("b_selected");
+                    $(this).addClass("b_selected");
+                    countPrice();
+                });
+            }
+        </script>
+    <!--虚拟机列表-->
+    <table id="example" class="display" border="0" cellspacing="0" cellpadding="0" style="padding-top: 32px;">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select_all" /></th>
+                <th>ID</th>
+                <th>主机名</th>
+                <th>状态</th>
+                <th>公网IP</th>
+                <th>内网IP</th>
+                <th>可用区</th>
+                <th>主机计费模式</th>
+                <th>到期时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="qloading" style="position:absolute;z-index:999;width:100%;">
+        <div class="preloader-wrapper active" style="margin-left:40%;width:30px;height:30px;margin-top:10px;">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var qcloudDetailData = {};
+        getQcloudList();
+        getImageList();
+        getQKeyList();
+        getSecuritygroupList();
+
+        $("#select_all").on("click", function() {
+            $("#example_next").on("click", function() {
+                $("#select_all").prop("checked", false);
+            });
+            if($("#select_all").is(":checked")) {
+                $(".select_vm_box").addClass("selected");
+                $(".select_vm_box").each(function () {
+                    $(this).prop("checked", true);
+                    $(this).addClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid"), $(this).parents("tr").find("td").eq(1).find("a").attr("data-autorenew"), $(this), true);
+                });
+            } else {
+                $(".select_vm_box").removeClass("selected");
+                $(".select_vm_box").each(function () {
+                    $(this).prop("checked",false);
+                    $(this).removeClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid"), $(this).parents("tr").find("td").eq(1).find("a").attr("data-autorenew"), $(this), false);
+                });
+            }
+            setButtonStatus();
+        });
+        init_table_func();
+        $("#vm_operation_btn").click(function() {
+            Materialize.showStaggeredList('#vm_operation_box');
+            setTimeout(function(){
+                $('#vm_operation_box').toggle('slow');
+            },100);
+        });
+
+        function refreshTable() {
+            $("#refresh_vm").trigger("click");
+        }
+        function getQcloudList() {
+            var region = $("#q_region option").eq(document.getElementById("q_region").selectedIndex).attr("region");
+            var data = {
+                "region": region
+            }
+            $.ajax({
+                "type": "HTTP",
+                "method": "POST",
+                "url": "/getQcloudList",
+                "data": data,
+                success: function(resp) {
+                    var data = eval("("+resp+")");
+                    init_vm_table(data);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+        function getRegionList() {
+            $.ajax({
+                "type": "HTTP",
+                "method": "POST",
+                "url": "/getRegionList",
+                success: function(resp) {
+                    var data = eval("("+resp+")");
+                    var regionList = data['availableRegion'];
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+        $("#q_region").on("change", function() {
+            getZoneList($(this).find("option").eq(document.getElementById("q_region").selectedIndex).attr("region"));
+            refreshTable();
+        });
+        function getZoneList(region) {
+            if(!region) {
+               region = q_region;
+            }
+            var data = {
+                "region": region
+            };
+            $.ajax({
+                "type": "HTTP",
+                "method": "POST",
+                "url": "/getZoneList",
+                "data": data,
+                success: function(resp) {
+                    $("#q_zone").empty();
+                    var data = eval("("+resp+")");
+                    var zonelist = data['zoneSet'];
+                    if(!zonelist) {
+                        $("#q_zone").remove();
+                        return;
+                    }
+                    var html = '';
+                    for(var i = 0; i < zonelist.length; i++){
+                        html += '<option data-zoneId="'+zonelist[i]['zoneId']+'">'+zonelist[i]['zoneName']+'</option>';
+                    }
+                    $("#q_zone").append(html);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+        function getImageList() {
+            var data = {
+                "imageType": 2
+            };
+            var html = '';
+            $.ajax({
+                "type": "HTTP",
+                "method": "POST",
+                "url": "/getImageList",
+                "data": data,
+                success: function(resp) {
+                    var data = eval("("+resp+")");
+                    var imageData = data['imageSet'];
+                    for(var i = 0; i < imageData.length; i++) {
+                        html += '<option data-unImgId="'+imageData[i]['unImgId']+'" data-imageId="'+imageData[i]['imageId']+'">'+imageData[i]['imageName']+'</option>';
+                    }
+                    $("#systemName").empty().append(html);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+        
+        function getQKeyList() {
+            var html = '';
+            $.ajax({
+                "type": "HTTP",
+                "method": "POST",
+                "url": "/getQKeyList",
+                success: function(resp) {
+                    var data = eval("("+resp+")");
+                    var keyData = data['data']['sshSet'];
+                    for(var i = 0; i < keyData.length; i++) {
+                        html += '<option data-keyId="'+keyData[i]['keyId']+'">'+keyData[i]['keyName']+'</option>';
+                    }
+                    $("#select_key").empty().append(html);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+        function getSecuritygroupList() {
+            var html = '';
+            $.ajax({
+                "type": "HTTP",
+                "method": "POST",
+                "url": "/getSecuritygroupList",
+                success: function(resp) {
+                    var data = eval("("+resp+")");
+                    var securityData = data['data'];
+                    for(var i = 0; i < securityData.length; i++) {
+                        /**处理脏数据*/
+                        if(i != securityData.length-1 && i != securityData.length-2 && i != securityData.length-3) {
+                            html += '<option data-sgId="'+securityData[i]['sgId']+'">'+securityData[i]['sgName']+'</option>';
+                        }
+                    }
+                    $("#select_Securitygroup").empty().append(html);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function init_vm_table(data) {
+            $("#example").dataTable().fnDestroy();
+            var tableData = [];
+            if(!data.instanceSet) {
+                tableData = [];
+            } else {
+                tableData = data.instanceSet;
+            }
+            var table = $('#example').dataTable({
+                "data": tableData,
+                "lengthChange": false,
+                "retrieve": true,
+                "destroy": true,
+                "bPaginate" : true,
+                "bProcessing" : true,
+                "sPaginationType": "simple",
+                "sInfo": false,
+                "searching":false,
+                "aaSorting": [ [8,'desc'] ],
+                "columns": [
+                    {
+                        "sClass": "text-center",
+                        "data": "ID",
+                        "render": function (e,a,b) {
+                            if(b['status'] == 3 || b['status'] == 7 || b['status'] == 8 || b['status'] == 9) {
+                                return '<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>';
+                            } else {
+                                return '<input type="checkbox" class="select_vm_box" />';
+                            }
+                        }
+                    },
+                    { 
+                        "data": "unInstanceId",
+                        "render": function(e,a,b) {
+                            qcloudDetailData[e] = b;
+                            return '<a data-autorenew="'+b['autoRenew']+'" data-instanceid="'+e+'" href="javascript:void(0)" class="toDetailTable"><span>'+e+'</span></a>';
+                        }
+                    },
+                    { "data": "instanceName" },
+                    { "data": "status",
+                      "render": function(status) {
+                        if(status == 2) {
+                            return '<span data-status="active" style="color:#06C290;">运行中</span>';
+                        } else if(status == 3) {
+                            return '<span data-status="creating" style="color:#088BFC;">创建中</span>';
+                        } else if(status == 4) {
+                            return '<span data-status="shutoff" style="color:#ED5812;">已关机</span>';
+                        } else if(status == 7) {
+                            return '<span data-status="restarting" style="color:#67F2F2;">重启中</span>';
+                        } else if(status == 8) {
+                            return '<span data-status="starting" style="color:#43E00F;">开机中</span>';
+                        } else if(status == 9) {
+                            return '<span data-status="stopping" style="color:#9D9D9D;">关机中</span>';
+                        } else {
+                            return '<span style="color:#088BFC;">-</span>';
+                        }
+                      }
+                    },
+                    { "data": "wanIpSet",
+                      "render": function(wanIpSet) {
+                        if(wanIpSet == "") {
+                            return "-";
+                        } else {
+                            return wanIpSet[0];
+                        }
+                      }
+                    },
+                    { "data": "lanIp" },
+                    { "data": "zoneName" },
+                    { "data": "cvmPayMode",
+                      "render": function(cvmPayMode) {
+                        if(cvmPayMode == 0) {
+                            return '按月结算的后付费';
+                        } else if(cvmPayMode == 1) {
+                            return '包年/包月';
+                        } else {
+                            return '按量计费';
+                        }
+                      }
+                    },
+                    { "data": "deadlineTime",
+                      "render": function(deadlineTime) {
+                        if(deadlineTime.split("-")[0] == 0) {
+                            return '-';
+                        } else {
+                            return deadlineTime;
+                        }
+                      }
+                    },
+                    { "data": "autoRenew",
+                      "render": function(a, b, c) {
+                        if(a == 1) {
+                            return '<a class="cancel_renew_vm" href="javascript:void(0)" class="waves-effect waves-light btn">取消续费</a>'
+                        } else {
+                            return '<a class="renew_vm" href="javascript:void(0)" class="waves-effect waves-light btn">自动续费</a>'
+                        }
+                      }
+                    }
+                ]
+            });
+
+            if(!data.instanceSet) {
+                $(".dataTables_empty").empty().append(data.message);
+                $(".dataTables_empty").css("background-color","#BFD8FC");
+                return;
+            }
+
+            if(data.instanceSet.length == 0) {
+                $(".dataTables_empty").empty().append('云主机列表为空，您可以<a class="table_trigger" href="javascript:void(0)">新建</a>一台云主机');
+                $(".dataTables_empty").css("background-color","#BFD8FC");
+                $(".table_trigger").on("click", function() {
+                    $("#create_vm").trigger("click");
+                });
+                return;
+            }
+            $("#qloading").hide();
+            init_table_func();
+
+            $(".paginate_button").on("click", function() {
+                init_table_func();
+            });
+
+            $(".renew_vm").on("click", function() {
+                // for(var i = 0; i < selectToOperaList.length; i++) {
+                //     renew_vm_func(selectToOperaList[i]);
+                // }
+                var region = $("#q_region option").eq(document.getElementById("q_region").selectedIndex).attr("region");
+                var instance_id = $(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid");
+                if(!region) {
+                   region = q_region;
+                }
+                var item_data_json = {
+                    'region': region,
+                    'instanceType': 1,
+                    'instanceIds': instance_id,
+                    'autoRenew': 1
+                };
+                $.ajax({
+                    "type": "HTTP",
+                    "method": "POST",
+                    "url": "/setautorenew",
+                    "data": item_data_json,
+                    success: function(resp) {
+                        console.log(resp);
+                        refreshTable();
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            });
+            $(".cancel_renew_vm").on("click", function() {
+                var region = $("#q_region option").eq(document.getElementById("q_region").selectedIndex).attr("region");
+                var instance_id = $(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid");
+                if(!region) {
+                   region = q_region;
+                }
+                var item_data_json = {
+                    'region': region,
+                    'instanceType': 1,
+                    'instanceIds': instance_id,
+                    'autoRenew': 2
+                };
+                $.ajax({
+                    "type": "HTTP",
+                    "method": "POST",
+                    "url": "/setautorenew",
+                    "data": item_data_json,
+                    success: function(resp) {
+                        console.log(resp);
+                        refreshTable();
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            });
+        }
+        $(".paginate_button").on("click", function() {
+            init_table_func();
+        });
+
+        $("#cvm_buy_size").keyup(function(){
+            var regex = /[^\d]*/g;
+            var numVal = $(this).val();
+            numVal = numVal.replace(regex,"");
+            numVal = parseInt(numVal) || 1;
+            numVal = numVal < 1? 1 : numVal;
+            $(this).val(numVal);
+            countPrice();
+        });
+
+        function setDetailTable (obj, data) {
+            var requestInstanceId = obj.attr("data-instanceid");
+            var detalList = data[requestInstanceId];
+
+            //名称
+            $("#vertical_table tr").eq(1).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(1).find("td").eq(1).text(detalList["instanceName"]);
+            //服务器ID
+            $("#vertical_table tr").eq(2).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(2).find("td").eq(1).text(detalList["uuid"]);
+            //状态
+            var status = '';
+            if(detalList["status"] == 2) {
+                status = '<span style="color:#06C290;">运行中</span>';
+            } else if(detalList["status"] == 3) {
+                status = '<span style="color:#088BFC;">创建中</span>';
+            } else if(detalList["status"] == 4) {
+                status = '<span style="color:#ED5812;">已关机</span>';
+            } else if(detalList["status"] == 7) {
+                status = '<span style="color:#67F2F2;">重启中</span>';
+            } else if(detalList["status"] == 8) {
+                status = '<span style="color:#43E00F;">开机中</span>';
+            } else if(detalList["status"] == 9) {
+                status = '<span style="color:#9D9D9D;">关机中</span>';
+            } else {
+                status = '<span style="color:#088BFC;">-</span>';
+            }
+            $("#vertical_table tr").eq(3).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(3).find("td").eq(1).append(status);
+            //公网IP
+            $("#vertical_table tr").eq(4).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(4).find("td").eq(1).append(detalList["wanIpSet"][0]);
+            //内网IP
+            $("#vertical_table tr").eq(5).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(5).find("td").eq(1).append(detalList["lanIp"]);
+            //创建时间
+            $("#vertical_table tr").eq(6).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(6).find("td").eq(1).append(detalList["createTime"]);
+            //到期时间
+            $("#vertical_table tr").eq(7).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(7).find("td").eq(1).append(detalList["deadlineTime"]);
+            //地域
+            $("#vertical_table tr").eq(8).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(8).find("td").eq(1).append(detalList["zoneId"]);
+            //可用区
+            $("#vertical_table tr").eq(9).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(9).find("td").eq(1).append(detalList["zoneName"]);
+            //主机计费模式
+            var cvmPayMode = '';
+            if(detalList["cvmPayMode"] == 0) {
+                cvmPayMode = "按月结算的后付费";
+            } else if(detalList["cvmPayMode"] == 1) {
+                cvmPayMode = "包年/包月";
+            } else if(detalList["cvmPayMode"] == 2) {
+                cvmPayMode = "按量计费";
+            }
+            $("#vertical_table tr").eq(10).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(10).find("td").eq(1).append(cvmPayMode);
+            //网络计费模式
+            var networkPayMode = '';
+            if(detalList["networkPayMode"] == 0) {
+                networkPayMode = "按月结算的后付费";
+            } else if(detalList["networkPayMode"] == 1) {
+                networkPayMode = "包年/包月";
+            } else if(detalList["networkPayMode"] == 2) {
+                networkPayMode = "按流量";
+            } else if(detalList["networkPayMode"] == 3) {
+                networkPayMode = "按带宽";
+            }
+            $("#vertical_table tr").eq(11).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(11).find("td").eq(1).append(networkPayMode);
+            //用作公网网关
+            var isVpcGateway = '';
+            if(detalList["isVpcGateway"] == 0) {
+                isVpcGateway = "否";
+            } else if(detalList["isVpcGateway"] == 1) {
+                isVpcGateway = "是";
+            } 
+            $("#vertical_table tr").eq(12).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(12).find("td").eq(1).append(isVpcGateway);
+            //所在子网
+            $("#vertical_table tr").eq(13).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(13).find("td").eq(1).append("-");
+
+            //操作系统
+            $("#vertical_table tr").eq(15).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(15).find("td").eq(1).append(detalList["os"]);
+            //CPU
+            $("#vertical_table tr").eq(16).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(16).find("td").eq(1).append(detalList["cpu"]+"核");
+            //内存
+            $("#vertical_table tr").eq(17).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(17).find("td").eq(1).append(detalList["mem"]+"GB");
+            //系统盘
+            var storageType = "";
+            if(detalList["diskInfo"]["storageType"] == 1) {
+                storageType = "本地磁盘";
+            } else {
+                storageType = "云磁盘";
+            }
+            $("#vertical_table tr").eq(18).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(18).find("td").eq(1).append(detalList["diskInfo"]["rootSize"]+"GB (" + storageType + ")");
+            //数据盘
+            $("#vertical_table tr").eq(19).find("td").eq(1).empty();
+            if(!detalList["diskInfo"]["storageSize"]) {
+                $("#vertical_table tr").eq(19).find("td").eq(1).append("0GB (" + storageType + ")");
+            } else {
+                $("#vertical_table tr").eq(19).find("td").eq(1).append(detalList["diskInfo"]["storageSize"]+"GB (" + storageType + ")");
+            }
+            //公网宽带
+            $("#vertical_table tr").eq(20).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(20).find("td").eq(1).append("-");
+
+            //镜像名称
+            $("#vertical_table tr").eq(22).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(22).find("td").eq(1).append(detalList["os"]);
+            //类型
+            $("#vertical_table tr").eq(23).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(23).find("td").eq(1).append(detalList["imageType"]);
+            //镜像ID
+            $("#vertical_table tr").eq(24).find("td").eq(1).empty();
+            $("#vertical_table tr").eq(24).find("td").eq(1).append(detalList["unImgId"]);
+        }
+
+        function init_table_func() {
+            $(".select_vm_box").on("click",function() {
+                if($(this).hasClass("selected")) {
+                    $(this).removeClass("selected");
+                    $("#select_all").attr("checked",false);
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid"), $(this).parents("tr").find("td").eq(1).find("a").attr("data-autorenew"), $(this), false);
+                } else {
+                    $(this).addClass("selected");
+                    selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid"), $(this).parents("tr").find("td").eq(1).find("a").attr("data-autorenew"), $(this), true);
+                }
+                setButtonStatus();
+            });
+
+            $("#cancel").on("click", function() {
+                oriPage();
+            });
+
+            $("#closeCreateModal").on("click", function() {
+                $("#cancel").trigger("click");
+            });
+
+            $(".toDetailTable").on("click", function() {
+                $("#modal3").openModal();
+                setDetailTable($(this), qcloudDetailData);
+            });
+        }
+
+        $("#delete_vm").click(function() {
+            if(!confirm("确认删除？")) {
+                return;
+            }
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                delete_vm_func(selectToOperaList[i]);
+            }
+        });
+        $("#open_vm").click(function() {
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                start_vm_func(selectToOperaList[i]);
+            }
+        });
+        $("#close_vm").click(function() {
+            for(var i = 0; i < selectToOperaList.length; i++) {
+                stop_vm_func(selectToOperaList[i]);
+            }
+        });
+        $("#refresh_vm").click(function() {
+            $("#delete_vm").removeClass("disabled");
+            $("#open_vm").removeClass("disabled");
+            $("#close_vm").removeClass("disabled");
+            $("#delete_vm").addClass("waves-effect");
+            $("#open_vm").addClass("waves-effect");
+            $("#close_vm").addClass("waves-effect");
+            selectToOperaList = [];
+            getQcloudList();
+        });
+        $(".select_vm_box").on("click",function() {
+            if($(this).hasClass("selected")) {
+                $(this).removeClass("selected");
+                $("#select_all").attr("checked",false);
+                selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid"), $(this).parents("tr").find("td").eq(1).find("a").attr("data-autorenew"), $(this), false);
+            } else {
+                $(this).addClass("selected");
+                selectToOpera($(this).parents("tr").find("td").eq(1).find("a").attr("data-instanceid"), $(this).parents("tr").find("td").eq(1).find("a").attr("data-autorenew"), $(this), true);
+            }
+            setButtonStatus();
+        });
+        function selectToOpera(instance_id, autoRenew, obj, operationType) {
+            if(operationType) {
+                var obj = {
+                    "instance_id": instance_id,
+                    "autoRenew": autoRenew,
+                    "self": obj
+                }
+                selectToOperaList.push(obj);
+            } else {
+                for(var i = 0; i < selectToOperaList.length; i++) {
+                    if(instance_id == selectToOperaList[i]['instance_id']) {
+                        selectToOperaList.splice(i,1);
+                    }
+                }
+            }
+        }
+
+        function start_vm_func(objList) {
+            var region = $("#q_region option").eq(document.getElementById("q_region").selectedIndex).attr("region");
+            if(!region) {
+               region = q_region;
+            }
+            var item_data_json = {
+                'region': region,
+                'instanceIds': objList['instance_id']
+            };
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/qStartVM',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    objList["self"].parents("tr").find("td").eq(3).empty().append('<span style="color:#43E00F;">开机中</span>');
+                    objList["self"].parents("tr").find("td").eq(0).empty().append('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+                },
+                error:function(){
+                    console.log(req);
+                }
+            });
+        }
+        function stop_vm_func(objList) {
+            var region = $("#q_region option").eq(document.getElementById("q_region").selectedIndex).attr("region");
+            if(!region) {
+               region = q_region;
+            }
+            var item_data_json = {
+                'region': region,
+                'instanceIds': objList['instance_id']
+            };
+            $.ajax({
+                'type':'HTTP',
+                'method':'POST',
+                'url':'/qStopVM',
+                'data':item_data_json,
+                success:function(req){
+                    console.log(req);
+                    objList["self"].parents("tr").find("td").eq(3).empty().append('<span style="color:#9D9D9D;">关机中</span>');
+                    objList["self"].parents("tr").find("td").eq(0).empty().append('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+                },
+                error:function(){
+                    console.log(req);
+                }
+            });
+        }
+        function renew_vm_func(objList) {
+            var region = $("#q_region option").eq(document.getElementById("q_region").selectedIndex).attr("region");
+            if(!region) {
+               region = q_region;
+            }
+            var item_data_json = {
+                'region': region,
+                'instanceType': 1,
+                'instanceIds': objList['instance_id'],
+                'autoRenew': parseInt(objList['autoRenew'])
+            };
+            $.ajax({
+                "type": "HTTP",
+                "method": "POST",
+                "url": "/setautorenew",
+                "data": item_data_json,
+                success: function(resp) {
+                    console.log(resp);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+        function oriPage() {
+            $(".CreateVmFlag").hide();
+            $("#select_key").siblings("i").hide();
+            oriSelect(["systemName","select_key"]);
+            $("#front").trigger("click");
+            $("#front").trigger("click");
+            $("#cvm_buy_size").val(1);
+            cvm_buy_size = 1;
+        }
+        function oriSelect(domIdGroup) {
+            for(var i = 0; i < domIdGroup.length; i++) {
+                document.getElementById(domIdGroup[i]).selectedIndex = 0;
+            }
+        }
+        function dataFormat(date) {
+            var year = date.getFullYear();
+            var month = date.getMonth()+1;
+            var day = date.getDate();
+            var hour = date.getHours();
+            var minute = date.getMinutes();
+            var second = date.getSeconds();
+            if(month < 10) {
+                month = "0"+month;
+            }
+            if(day < 10) {
+                day = "0"+day;
+            }
+            if(hour < 10) {
+                hour = "0"+hour;
+            }
+            if(minute < 10) {
+                minute = "0"+minute;
+            }
+            if(second < 10) {
+                second = "0"+second;
+            }
+            var resultTime = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
+            return resultTime;
+        }
+        function formatDate(date) {
+            var now = new Date(date);
+            dataFormat(now);
+        }
+        function setButtonStatus() {
+            $("#open_vm").removeClass("disabled");
+            $("#close_vm").removeClass("disabled");
+            $("#open_vm").addClass("waves-effect");
+            $("#close_vm").addClass("waves-effect");
+            for(var i = 0; i < $(".selected").length; i++) {
+                var statusFlag = $(".selected").eq(i).parents("tr").find("td").eq(3).find("span").attr("data-status").toLowerCase();
+                if(statusFlag == "shutoff" || statusFlag == "stopping") {
+                    $("#close_vm").addClass("disabled");
+                    $("#close_vm").removeClass("waves-effect");
+                }
+                if(statusFlag == "active" || statusFlag == "starting") {
+                    $("#open_vm").addClass("disabled");
+                    $("#open_vm").removeClass("waves-effect");
+                }
+                if(statusFlag == "deleting") {
+                    $("#delete_vm").addClass("disabled");
+                    $("#delete_vm").removeClass("waves-effect");
+                }
+            }
+        }
+    </script>
+    </body>
+</html>

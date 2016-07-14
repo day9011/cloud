@@ -1,0 +1,171 @@
+<html>
+	<head>
+		<title>GameCloud</title>
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+		<link type="text/css" rel="stylesheet" href="/static/css/materialize.css" media="screen,projection" />
+		<link type="text/css" rel="stylesheet" href="/static/css/indexPage.css" />
+	</head>
+	<body style="margin:0 0;">
+		<div style="height:100%;position:inherit;">
+			<!--top-->
+			<div style="height:65px;background-color:#000000;opacity:0.8;">
+				<div style="width:200px;line-height:65px;margin-left:15%;float:left;">
+					<a href="">
+						<img src="/static/images/gcloud.png" />
+						<span style="color:#ffffff;font-family:cursive;font-size:22px;">GameCloud</span>
+					</a>
+				</div>
+				<div class="row" style="float:left;width:400px;">
+				    <div class="col s12" style="height:100%;">
+				        <ul class="tabs" style="background-color:transparent;height:100%;">
+					        <li class="tab col s3" style="margin-top:10px;"><a style="color:#FFFFFF;" href="">DashBoard</a></li>
+					        <li class="tab col s3" style="margin-top:10px;"><a style="color:#FFFFFF;" href="">G-Cloud</a></li>
+					        <li class="tab col s3" style="margin-top:10px;"><a style="color:#FFFFFF;" href="">CDN</a></li>
+				        </ul>
+				    </div>
+				 </div>
+				 <div style="float:right;margin-right:30px;height:65px;">
+				 	<a id="username" style="color:#FFFFFF;line-height:65px;" href="/vm_create">登录</a>
+				 	<!-- <a id="logout" style="color:#FFFFFF;line-height:65px;" href="/logout">退出</a> -->
+				 	<a id="logout" style="margin-left:20px;color:#FFFFFF;line-height:65px;" href="/logout">退出</a>
+				 </div>
+			</div>
+
+			<!--middle-->
+			<div>
+				<!--AD-->
+				<div id="slides" style="width:100%;position:absolute;">
+			       <a style="width:100%;height:100%;" href="/construction"><img style="width:100%;height:100%;" src="/static/images/dashboard.png" /></a>
+			       <a style="width:100%;height:100%;" href="/vm_create"><img style="width:100%;height:100%;" src="/static/images/gcloud.jpg" /></a>
+			       <a style="width:100%;height:100%;" href="/tasklogdetail"><img style="width:100%;height:100%;" src="/static/images/cdn.jpg" /></a>
+			    </div>
+			</div>
+
+			<!--bottom-->
+			<div style="position:absolute;margin-top:28%;width:100%;text-align:center">
+				<!--详情-->
+				<div style="text-align: center;margin-left:calc((100% - 1000px)/2);">
+					<div class="col s12 m2 z-depth-2 center-align">
+					    <div class="leftSide">
+					    	<img src="/static/images/product-9.png">
+					    	<b>DashBoard</b>
+				    	</div>
+				    	<div class="rightSide">
+				    		<a href="/construction">Dashboard</a>
+				    	</div>
+					</div>
+
+					<div class="col s12 m2 z-depth-2 center-align">
+					    <div class="leftSide">
+					    	<img src="/static/images/product-1.png">
+					    	<b>Service Mgmt</b>
+				    	</div>
+				    	<div class="rightSide">
+				    		<a href="/services/ts">TS Service</a><br /><br />
+				    		<a href="/services/common">Common Service</a>
+				    	</div>
+					</div>
+
+					<div class="col s12 m2 z-depth-2 center-align">
+					    <div class="leftSide">
+					    	<img src="/static/images/product-2.png">
+					    	<b>CDN</b>
+				    	</div>
+				    	<div class="rightSide">
+				    		<a href="/tasklogdetail">总览</a><br /><br />
+				    		<a href="/detailsearch">筛选</a>
+				    	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/static/js/materialize.js"></script>
+		<script type="text/javascript" src="/static/js/jquery.slides.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			    $('ul.tabs').tabs();
+			    $(".indicator").css("background-color","#ffffff");
+			    $('#slides').slidesjs({
+			    	width: 1920,
+			    	height: 500,
+			    	navigation: {
+			    		active: true,
+			    		effect: "slide"
+			    	},
+			    	pagination: {
+			    		active: true,
+			    		effect: "slide"
+			    	},
+			    	play: {
+			    		active: false,
+			    		effect: "slide",
+			    		interval: 5000,
+			    		auto: true,
+			    		swap: true,
+			    		pauseOnHover: true,
+			    		restartDelay: 2000
+			    	},
+			    	effect: {
+			    		slide: {
+			    			speed: 1000
+			    		},
+			    		fade: {
+			    			speed: 2500,
+			    			crossfade: true
+			    		}
+			    	}
+			    });
+
+			    var Cookie=new Object(); 
+				Cookie.setCookie=function(name, value, option){ 
+				    var str=name+'='+escape(value); 
+				    if(option){ 
+				        if(option.expireHours){ 
+				            var d=new Date(); 
+				            d.setTime(d.getTime()+option.expireHours*3600*1000); 
+				            str+='; expires='+d.toGMTString(); 
+				        } 
+				        if(option.path) str+='; path='+option.path; 
+				        if(option.domain) str+='; domain='+option.domain; 
+				        if(option.secure) str+='; true'; 
+				    } 
+				    document.cookie=str; 
+				} 
+				Cookie.getCookie=function(name){ 
+				    var arr = document.cookie.split('; '); 
+				    if(arr.length==0) return ''; 
+				    for(var i=0; i <arr.length; i++){ 
+				        tmp = arr[i].split('='); 
+				        if(tmp[0]==name) return unescape(tmp[1]); 
+				    } 
+				    return ''; 
+				} 
+				Cookie.delCookie=function(name){ 
+				    this.setCookie(name,'',{expireHours:-1}); 
+				}
+
+			    $("#username").text(document.cookie.split("=")[1]?document.cookie.split("=")[1]:"登录");
+			    if(document.cookie.split("=")[1]) {
+			    	$("#logout").show();
+			    } else {
+			    	$("#logout").hide();
+			    }
+
+			    $("#logout").on("click", function() {
+			    	Cookie.delCookie('username'); 
+			    });
+
+			    $(".tabs a").eq(0).on("click", function() {
+			    	$(".slidesjs-pagination-item a").eq(0).trigger("click");
+			    });
+			    $(".tabs a").eq(1).on("click", function() {
+			    	$(".slidesjs-pagination-item a").eq(1).trigger("click");
+			    });
+			    $(".tabs a").eq(2).on("click", function() {
+			    	$(".slidesjs-pagination-item a").eq(2).trigger("click");
+			    });
+			});
+		</script>
+	</body>
+</html>

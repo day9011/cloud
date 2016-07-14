@@ -1,0 +1,218 @@
+/*全局的CSS样式调整*/
+body{
+    background: url(../images/bg.jpg);
+}
+
+nav.navbar{
+    box-shadow: 0 0 10px rgba(0,0,0, .8);
+}
+
+table.dataTable tr td a{text-decoration: none;}
+
+.modal {
+    top: 50px;
+    outline: none
+}
+.btn-lg {
+    font-size: 12px;
+}
+
+.table.dataTable tbody th{
+    padding:6px 8px;
+}
+
+.table.dataTable tbody td {
+    padding:6px 8px;
+}
+
+.container {
+    width: 1270px;
+}
+
+body {
+    font-size: 12px;
+    font-family: "微软雅黑", Arial, sans-serif;
+}
+
+.form-control {
+    font-size: 12px;
+    padding: 2px 2px;
+    height: 30px;
+}
+
+.navbar .nav > li .dropdown-menu {
+    margin: 0;
+}
+
+.navbar .nav > li:hover .dropdown-menu {
+    display: block;
+}
+
+.well {
+    border: none;
+    box-shadow:none;
+}
+.label {
+    padding: 0em 0.6em 0;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+    font-size: 14px;
+}
+
+.dropdown, .container-fluid>.navbar-header{
+    margin-right: 21px;
+}
+
+.nav .open{color:#fff !important;}
+
+/* profile popup */
+div.profile-container{ position:absolute; top:62px; right:-11px; font-size: 14px; display:none; width:140px; background-color:transparent; *border:1px solid #666;}
+div.profile-container s{ position:absolute; top:-20px; *top:-22px; right:20px; display:block; height:0; width:0; font-size: 0;  line-height: 0; border-color:transparent transparent #666 transparent; border-style:dashed dashed solid dashed; border-width:10px;}
+div.profile-container i{ position:absolute; top:-9px; *top:-9px; left:-10px; display:block; height:0; width:0; font-size: 0; line-height: 0; border-color:transparent transparent #fff transparent; border-style:dashed dashed solid dashed; border-width:10px; }
+div.profile-content{ border:1px solid #666; -moz-border-radius:3px; -webkit-border-radius:3px; background-color:#fff; width:100%; height:100%; *top:-2px; *border-top:1px solid #666; *border-top:1px solid #666; *border-left:none; *border-right:none; *height:102px; box-shadow: 3px 3px 4px #999; -moz-box-shadow: 3px 3px 4px #999; -webkit-box-shadow: 3px 3px 4px #999; }
+div.profile-content ul{padding: 10px;}
+div.profile-content ul li{text-align: center; height:26px; line-height: 26px;}
+div.profile-content ul li a, div.profile-content ul li a:hover{color:#000; text-decoration: none;}
+
+table#showData td{font-size:13px;}
+div#DT_TOOLS_BTN button{font-size:13px;}
+
+/* for firefox */
+@-moz-document url-prefix() {
+div.dataTables_filter{position: relative; bottom:34px;}
+}
+
+span.navbar-brand{font-size: 14px;}
+/* main menu */
+div#main_menu{}
+div#main_menu a.top_menu_btn{margin-left: 3px;}
+div#main_menu #site_logo{margin-right: 20px;}
+div#main_menu a{font-size:14px; cursor: pointer;}
+div#main_menu i{font-size:10px; margin-left: 3px;}
+div.main-dropdown-menu{width: 100%; margin-left:-15px; height: 0px; position:absolute; top: 50px; display: none; overflow: hidden;}
+div.main-dropdown-menu div.main-box{background: #333; width: 98%; height: 98%; margin: 0 auto; border-bottom-left-radius: 5px;border-bottom-right-radius: 5px; box-shadow: 5px 5px 5px rgba(0,0,0, .3);}
+div.main-dropdown-menu div.main-box>div{float:left; width: 200px; height: inherit;}
+div.main-dropdown-menu div.main-box>div.menu-history{width: 15%;}
+div.main-dropdown-menu div.main-box>div.menu-entry{width: 85%;}
+div.main-dropdown-menu ul{list-style-type: none; position: relative;}
+div.main-dropdown-menu ul li{line-height: 30px; height: 30px;width: 150px; cursor: pointer;}
+div#main_menu a:hover {color: #777;}
+div.main-dropdown-menu ul li>span{line-height: 30px; height: 30px; color: #333; float: right;}
+div.main-dropdown-menu ul li.first{height: 36px; line-height: 36px; border-bottom: 1px solid #666; width: 150px;}
+div.main-dropdown-menu ul li.submenu-title{height: 36px; line-height: 36px; border-bottom: 1px solid #666; width: 150px;}
+div.main-dropdown-menu .menu-history>div{font-size: 14px; color: #aaa; margin-left: 40px; height: 36px;line-height: 36px; border-bottom: 1px solid #666; width: 150px;}
+div.main-dropdown-menu a{font-size: 14px; color:#aaa; text-decoration: none;}
+div.main-dropdown-menu div.menu-entry ul{float: left;}
+div.main-dropdown-menu div.nav-submenu{display: none; top:0px; left: 190px; position: absolute;}
+#menu-aim-dropdown{float: left; }
+div.dropdown_submenu{display: none;}
+div.dropdown_submenu li a:hover{color: #fff;}
+div.dropdown_submenu li.submenu-title a:hover{color: #e8e8e8;}
+div.dropdown_submenu li.submenu-title a{color: #e8e8e8;}
+ul#show_history_menu li a:hover{color: #fff;}
+ul#show_history_menu li a{color: #666;}
+
+/*错误显示css样式*/
+.display_error {
+    background-color: #f2dede;
+    border-color: #ffefef;
+    color: #912c2a;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    min-height: 30px;
+    width: 870px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-size: 14px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+/*颜色类*/
+.red{
+    color: red;
+}
+
+.green{
+    color: green;
+}
+
+.blue{
+    color: blue;
+}
+
+.black{
+    color: black;
+}
+
+/*字体类*/
+.font_size_1{
+    font-size: 1px;
+}
+
+.font_size_60{
+    font-size: 60px;
+}
+
+.font_size_30{
+    font-size: 30px;
+}
+
+/*无序列表类*/
+.list{
+   list-style:none;
+   padding: 0px;
+}
+
+.label_tip{
+    position: absolute;
+    right: 0px;
+    display: block;
+}
+
+/*form样式*/
+.form-horizontal{
+    max-width: 960px;
+    margin: auto;
+}
+
+/*tooltip样式*/
+.tooltip-inner{
+background-color: rgb(242, 222, 222);
+color: rgb(169, 68, 66);
+min-width: 60px;}
+
+.tooltip.right .tooltip-arrow{
+border-right-color: rgb(242, 222, 222);
+}
+
+/* start datatables style */
+div.DTTT {position: relative; bottom: -30px;}
+table tr td a.editor_edit{color:#68A621;}
+table tr td a.editor_remove{color:#c40404;}
+div.dt_editor_hide_field{display:none;}
+div.DTE_Form_Error{color:#ff0000;}
+td.dataTables_empty{text-align: center;color:#ff0000;}
+div.dataTables_scrollHead {margin-bottom: -6px;}
+div.dataTables_length{padding-top:5px;}
+/* end datatables style */
+/* loading */
+div.loading_bg{position:absolute;top:0;left:0;z-index:9998;background:#000000;opacity: 0.4;display:none;}
+div.loading_fg{width:30px;position:absolute;z-index:9999;display:none;}
+div.loading_fg i{font-size:40px;color:#000;}
+
+/* search panel */
+div.search {display: none;}
+
+ul.multiselect-container{max-height: 300px; overflow-y: scroll;}
+
+.float_right {float:right;}
+
+.iyunwei {height: 40px; margin-top: 8px;}
+
+/* datatable processing */
+.dataTables_wrapper{position: relative;}
+.dataTables_wrapper .dataTables_processing{position: absolute; top: 50%; left: 50%; width: 100%; height: 50px; line-height: 50px; margin-left: -50%; text-align: center; font-size: 1.2em; background:rgba(240,240,240,0.9); z-index: 100;}
