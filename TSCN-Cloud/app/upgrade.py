@@ -28,9 +28,6 @@ def upgrade_tsRole():
         data = json.loads(request.get_data())
         logger.info("upgrade" + str(data))
         print data
-        s, c = db.get("SELECT url FROM domain")
-        if s:
-            raise Exception('Get domain list fail: %s' % c)
         time = get_current()
         image = data['image'] + ':' + data['branch'] + '-' + data['tag']
         sqlstr = "SELECT a.project_id as project_id, a.domain_id as domain_id, a.role_id as role_id, a.resource_id as resource_id, a.name as tsRoleName, a.role_seq " \
@@ -66,22 +63,24 @@ def upgrade_tsRole():
                 'need_restart': int(data['restart']),
             }
         }
-        for url in c:
-            url = url['url']
-            url += '/tsRole/upgrade'
-            message = requests.post(url, json.dumps(param))
-            message = json.loads(message.text)
-            if isinstance(message, dict):
-                if message["status"]:
-                    raise Exception(message['message'])
-                else:
-                    sqlstr = "UPDATE ts_role SET tag='%s', branch='%s', create_time='%s', resource_id='%s' WHERE id=%s" % (data['tag'], data['branch'], time, message['message'],data['ts_roleId'])
-                    s, f = db.mod(sqlstr)
-                    if s:
-                        raise Exception("update ts_role failed")
-                    ret['message'] = message['message']
+        s, c = db.get("SELECT url FROM domain WHERE id=(select domain_id from ts_role where id=%s)" % (data['ts_roleId']))
+        if s or not c:
+            raise Exception('Get domain list fail: %s' % c)
+        url = c[0]['url']
+        url += '/tsRole/upgrade'
+        message = requests.post(url, json.dumps(param))
+        message = json.loads(message.text)
+        if isinstance(message, dict):
+            if message["status"]:
+                raise Exception(message['message'])
             else:
-                raise Exception("return value error")
+                sqlstr = "UPDATE ts_role SET tag='%s', branch='%s', create_time='%s', resource_id='%s' WHERE id=%s" % (data['tag'], data['branch'], time, message['message'],data['ts_roleId'])
+                s, f = db.mod(sqlstr)
+                if s:
+                    raise Exception("update ts_role failed")
+                ret['message'] = message['message']
+        else:
+            raise Exception("return value error")
     except Exception, e:
         logger.error('Error: %s' % str(e))
         ret['status'] = 10

@@ -181,20 +181,21 @@ def get_ts_role_status(ts_roleId):
             raise Exception("get resource id error")
         else:
             resource_id = temp_dict[0]['resource_id']
-        s, c = db.get("SELECT url FROM domain")
-        if s:
+        s, c = db.get("SELECT url FROM domain WHERE id=(select domain_id from ts_role where id=%s)" % (str(ts_roleId)))
+        if s or not c:
             raise Exception('Get domain list fail: %s' % c)
-        for url in c:
-            url = url['url']
-            message = requests.get(url + '/tsRole/status/' + resource_id)
-            message = json.loads(message.text)
-            if isinstance(message, dict):
-                if message["status"]:
-                    raise Exception(message)
-                else:
-                    ret = message
+        url = c[0]['url']
+        message = requests.get(url + '/tsRole/status/' + resource_id)
+        message = json.loads(message.text)
+        if isinstance(message, dict):
+            if message["status"]:
+                raise Exception(message)
             else:
-                raise Exception("return value error")
+                ret = message
+                data = message['message']
+                cache.set(data['name'], json.dumps(data))
+        else:
+            raise Exception("return value error")
     except Exception, e:
         logger.error('Error: %s' % str(e))
         ret['status'] = -100

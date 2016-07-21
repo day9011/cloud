@@ -385,6 +385,8 @@
                         del_ts_role(selectToOperaList[i]);
                     }
                 $.unblockUI();
+                selectToOperaList = [];
+                refreshTable();
             });
 
             function del_ts_role (objList) {
@@ -856,6 +858,30 @@
                     console.log('port:' + $("#v_port").val());
                     console.log('config_url:' + $("#v_config_url").val());
                     console.log('download_url:' + $("#v_download_url").val());
+                    var datatable = $("#example").DataTable();
+                    var data_row = {
+                        'status': 'creating',
+                        'uptime': null,
+                        'name': $("#v_ts_role_name").val(),
+                        'resource_id': null,
+                        'disk_idle': null,
+                        'cpu_idle': null,
+                        'tag': $("#v_branch").val() + '-' + $("#v_tag").val(),
+                        'pub_ip': null,
+                        'mem_idle': null,
+                        'id': '',
+                        'priv_ip': null,
+                    }
+                    datatable.row.add(data_row).draw(false);
+                    var rows = datatable.rows().data();
+                    var row1Index = 0;
+                    var row2Index = datatable.rows()[0].length - 1;
+                    var row1Data = datatable.row(row1Index).data();
+                    var row2Data = datatable.row(row2Index).data();
+                    datatable.row(row1Index).data(row2Data);
+                    datatable.row(row2Index).data(row1Data);
+                    datatable.draw(false);
+                    var row =  datatable.row(row1Index);
                     $.ajax({
                         type: 'HTTP',
                         method: 'GET',
@@ -903,32 +929,12 @@
                                             return;
                                         }
                                         else {
-                                            var datatable = $("#example").DataTable();
-                                            data_row = {
-                                                'status': 'creating',
-                                                'uptime': null,
-                                                'name': param['tsRoleName'],
-                                                'resource_id': null,
-                                                'disk_idle': null,
-                                                'cpu_idle': null,
-                                                'tag': param['tag'],
-                                                'pub_ip': null,
-                                                'mem_idle': null,
-                                                'id': data['message'],
-                                                'priv_ip': null,
-                                            }
-                                            datatable.row.add(data_row).draw(false);
-                                            var rows = datatable.rows().data();
-                                            var row1Index = 0;
-                                            var row2Index = datatable.rows()[0].length - 1;
-                                            var row1Data = datatable.row(row1Index).data();
-                                            var row2Data = datatable.row(row2Index).data();
-                                            datatable.row(row1Index).data(row2Data);
-                                            datatable.row(row2Index).data(row1Data);
-                                            datatable.draw(false);
+                                            var d = row.data();
+                                            d['id'] = data['message'];
+//                                            row.data(row.data()['id'] = data['message']);
+                                            row.data(d).draw(false);
                                             if ($("#example").find('tr').eq(1)) var tr_obj = $("#example").find('tr').eq(1);
                                             query_ts_role_status(data['message'], tr_obj);
-                                            refreshTable();
                                         }
                                     },
                                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -1011,10 +1017,6 @@
                 $(".get_data").hide();
                 page_has_error = false;
             }
-
-            var redisGroup = [];
-            var flag = "0";
-            var isok = 0;
 
             $("#upgrade_role").click(function () {
                 $.blockUI({ message: '<h1>请稍后...</h1>' });
@@ -1116,8 +1118,6 @@
         </thead>
     </table>
     <script type="text/javascript">
-        var data=[{'vm_name': '', 'flavor': "","image": "", "cluster_name": "","cluster_id":"","create_time": "", "end_time": "","status":"","rangion":"","network":"","line":"","broadband":"","group":"","idc":"","cluster":"","instance_id":""}];
-        var showdata = [];
         var domain_id = $("#ts_domain").eq(document.getElementById("ts_domain").selectedIndex).val();
         var role_id = $("#RoleId").val();
         var selectToOperaList = [];
@@ -1153,6 +1153,7 @@
             $("#refresh_role").trigger("click");
         }
         function init_rolelist_table(data) {
+            console.log(data);
             var table = $('#example').DataTable({
                 "data": data,
                 "lengthChange": false,
@@ -1241,7 +1242,11 @@
                     }
                 ]
             });
-            table.draw(false);
+            $('#example').dataTable().fnClearTable();
+            if (data.length)
+                $('#example').dataTable().fnAddData(data);
+            $('#example').dataTable().fnDraw();
+            if (data == []) return;
             init_table_func();
         }
         $(".paginate_button").on("click", function() {
@@ -1353,9 +1358,6 @@
             for(var i = 0; i < selectToOperaList.length; i++) {
                 start_role_func(selectToOperaList[i]);
             }
-            for(var i = 0; i < selectToOperaList.length; i++) {
-                query_ts_role_status(selectToOperaList[i]['ts_roleId'], selectToOperaList[i]["objself"]);
-            }
         });
         $("#stop_role").click(function() {
             if($(this).hasClass("disabled")) {
@@ -1364,9 +1366,6 @@
             for(var i = 0; i < selectToOperaList.length; i++) {
                 stop_role_func(selectToOperaList[i]);
             }
-            for(var i = 0; i < selectToOperaList.length; i++) {
-                query_ts_role_status(selectToOperaList[i]['ts_roleId'], selectToOperaList[i]["objself"]);
-            }
         });
         $("#restart_role").click(function() {
             if($(this).hasClass("disabled")) {
@@ -1374,9 +1373,6 @@
             }
             for(var i = 0; i < selectToOperaList.length; i++) {
                 restart_role_func(selectToOperaList[i]);
-            }
-            for(var i = 0; i < selectToOperaList.length; i++) {
-                query_ts_role_status(selectToOperaList[i]['ts_roleId'], selectToOperaList[i]["objself"]);
             }
         });
         $("#refresh_role").click(function() {
@@ -1440,9 +1436,11 @@
                     set_btn_enable($("#start_role"));
                     set_btn_enable($("#delete_role"));
                     set_btn_enable($("#upgrade_role"));
+                    set_btn_enable($("#restart_role"));
                 }
                 else if (statusFlag == "running" || statusFlag == "starting"){
                     set_btn_enable($("#stop_role"));
+                    set_btn_enable($("#restart_role"));
                 } else {
                     setALLbtnDisabled();
                     return;
@@ -1459,15 +1457,20 @@
             var item_data_json = {
                 'ts_roleId': objList['ts_roleId']
             };
+            var project = $("#v_project").val();
             objList["objself"].find("td").eq(9).html('<span style="color:#43E00F;" data-status="starting">starting</span>');
             objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
             $.ajax({
                 'type':'HTTP',
                 'method':'POST',
-                'url':'/e-invoice/action/start',
+                'url': '/' + project +'/action/start',
                 'data':item_data_json,
                 success:function(req){
-                    if (req['status']) alert(req['message']);
+                    console.log(req);
+                    if (req['status'])
+                        alert(req['message']);
+                    else
+                        query_ts_role_status(objList['ts_roleId'], objList["objself"]);
                 },
                 error:function(){
                     alert("start failed!");
@@ -1483,65 +1486,25 @@
             var item_data_json = {
                 'ts_roleId': objList['ts_roleId']
             };
+            var project = $("#v_project").val();
             objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="stopping">stopping</span>');
             objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
             $.ajax({
                 'type':'HTTP',
                 'method':'POST',
-                'url':'/e-invoice/action/stop',
+                'url': '/' + project +'/action/stop',
                 'data':item_data_json,
                 success:function(req){
                     console.log(req);
-                    if (req['status']) alert(req['message']);
+                    if (req['status'])
+                        alert(req['message']);
+                    else
+                        query_ts_role_status(objList['ts_roleId'], objList["objself"]);
                 },
                 error:function(){
                     alert("stop failed!");
                 }
             });
-        }
-
-        var timer;
-        function query_ts_role_status(_tsroleid, obj) {
-            obj.find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
-            timer = setTimeout( function () {
-                $.ajax({
-                    type:'HTTP',
-                    method:'GET',
-                    url:'/ts/data/tsrole/status/' + _tsroleid,
-                    success:function(data){
-                        console.log(data['message']);
-                        if(!data['status'] && !$.isEmptyObject(data['message'])) {
-                            var data = data['message'];
-                            console.log(data);
-                            var status = data['status'];
-                            if (status == 'unknown') {
-                                query_ts_role_status(_tsroleid, obj);
-                                return;
-                            }
-                            else {
-                                clearTimeout(timer);
-                                console.log(obj);
-                                obj.find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
-                                if (status == 'stopped' || status == 'stopping'){
-                                    obj.find("td").eq(9).html('<span style="background-color:#E8C545; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="' + status +'">' + status + '</span>')
-                                }
-                                else if (status == 'running'){
-                                    obj.find("td").eq(9).html('<span style="background-color:#06C290; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="' + status +'">' + status + '</span>')
-                                }
-                                set_row_data(obj, data);
-                                return;
-                            }
-                        }
-                        else {
-                            query_ts_role_status(_tsroleid, obj);
-                            return;
-                        }
-                    },
-                    error:function(){
-                        console.log("stop failed!");
-                    }
-                });
-            }, 5000);
         }
 
         function restart_role_func(objList) {
@@ -1552,30 +1515,27 @@
             var item_data_json = {
                 'ts_roleId': objList['ts_roleId']
             };
+            var project = $("#v_project").val();
             objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="restarting">restarting</span>');
             objList["objself"].find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
             $.ajax({
                 'type':'HTTP',
                 'method':'POST',
-                'url':'/e-invoice/action/restart',
+                'url': '/' + project +'/action/restart',
                 'data':item_data_json,
                 success:function(req){
                     console.log(req);
                     if (req['status'] == 0) {
-                        new_status = req['message']
-                    } else {
-                        new_status = 'unknown'
+                        new_status = req['message'];
+                        query_ts_role_status(objList['ts_roleId'], objList["objself"]);
                     }
-                    // alert('Stop VM success!');
-                    objList["objself"].find("td").eq(9).html(refresh_status_column(new_status));
-                    objList["objself"].find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
-                    query_ts_role_status(objList['ts_roleId'], objList["objself"]);
                 },
                 error:function(){
                     console.log("restart failed!");
                 }
             });
         }
+
         function upgrade_role_func(objList) {
             console.log(objList);
             objList["objself"].find("td").eq(9).html('<span style="color:#9D9D9D;" data-status="upgrading">upgrading</span>');
@@ -1586,7 +1546,7 @@
                 'ts_roleId': objList['ts_roleId'],
                 'restart': $("#v_restart").val(),
                 'image': $("#v_download_url").val(),
-            }
+            };
             console.log(param);
             $.ajax({
                 type: 'HTTP',
@@ -1594,8 +1554,11 @@
                 url: '/ts/upgrade/tsRole',
                 dataType: 'json',
                 data: JSON.stringify(param),
-                success:function(req){
-                    if (req['status']) alert(req['message']);
+                success:function(req) {
+                    if (req['status'])
+                        alert(req['message']);
+                    else
+                        query_ts_role_status(objList['ts_roleId'], objList["objself"]);
                 },
                 error:function(){
                     alert("upgrade failed!");
@@ -1603,25 +1566,115 @@
             });
         }
 
-        function set_row_data (obj, data){
-            if (data['priv_ip'])
+
+        var timer;
+        function query_ts_role_status(_tsroleid, obj) {
+            var row = $("#example").DataTable().row(obj.index());
+            obj.find("td").eq(0).html('<image src="/static/images/top-alert-icon-doing.gif" style="width:15px"/>');
+            timer = setTimeout( function () {
+                $.ajax({
+                    type:'HTTP',
+                    method:'GET',
+                    url:'/ts/data/tsrole/status/' + _tsroleid,
+                    success:function(data){
+                        console.log(data['message']);
+                        if(!data['status'] && !$.isEmptyObject(data['message'])) {
+                            var data = data['message'];
+                            var status = data['status'];
+                            if (status == 'unknown') {
+                                query_ts_role_status(_tsroleid, obj, row);
+                                return;
+                            }
+                            else {
+                                clearTimeout(timer);
+                                console.log(obj);
+                                var d = row.data();
+                                obj.find("td").eq(0).html('<input type="checkbox" class="select_role_box" />');
+                                if (status == 'stopped' || status == 'stopping'){
+                                    obj.find("td").eq(9).html('<span style="background-color:#E8C545; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="' + status +'">' + status + '</span>')
+                                }
+                                else if (status == 'running'){
+                                    obj.find("td").eq(9).html('<span style="background-color:#06C290; color:white; font-weight:700; line-height: 1.5;font-size:80%; width:70px; display:inline-block" data-status="' + status +'">' + status + '</span>')
+                                }
+                                d['status'] = status;
+                                row.data(d);
+                                set_row_data(obj, data, row);
+                                init_table_func();
+                                setButtonStatus();
+                                return;
+                            }
+                        }
+                        else {
+                            query_ts_role_status(_tsroleid, obj, row);
+                            return;
+                        }
+                    },
+                    error:function(){
+                        console.log("stop failed!");
+                    }
+                });
+            }, 1000);
+        }
+
+        function set_row_data (obj, data, row){
+            var d = row.data();
+            if (data['priv_ip']) {
                 obj.find("td").eq(2).html(data['priv_ip']);
-            else obj.find("td").eq(2).html('-');
-            if (data['pub_ip'])
+                d['priv_ip'] = data['priv_ip'];
+            }
+            else {
+                obj.find("td").eq(2).html('-');
+                d['priv_ip'] = null;
+            }
+            if (data['pub_ip']) {
                 obj.find("td").eq(3).html(data['pub_ip']);
-            else obj.find("td").eq(3).html('-');
-            if (data['uptime'])
+                d['pub_ip'] = data['pub_ip'];
+            }
+            else {
+                obj.find("td").eq(3).html('-');
+                d['pub_ip'] = null;
+            }
+            if (data['tag']) {
+                obj.find("td").eq(5).html(data['tag']);
+                d['tag'] = data['tag'];
+            }
+            else {
+                obj.find("td").eq(5).html('-');
+                d['uptime'] = null;
+            }
+            if (data['uptime']) {
                 obj.find("td").eq(5).html(data['uptime']);
-            else obj.find("td").eq(5).html('-');
-            if (data['cpu_idle'])
+                d['uptime'] = data['uptime'];
+            }
+            else {
+                obj.find("td").eq(5).html('-');
+                d['uptime'] = null;
+            }
+            if (data['cpu_idle']) {
                 obj.find("td").eq(6).html(data['cpu_idle'] + '%');
-            else obj.find("td").eq(6).html('-');
-            if (data['mem_idle'])
+                d['cpu_idle'] = data['cpu_idle'];
+            }
+            else {
+                obj.find("td").eq(6).html('-');
+                d['cpu_idle'] = null;
+            }
+            if (data['mem_idle']) {
                 obj.find("td").eq(7).html(data['mem_idle'] + '%');
-            else obj.find("td").eq(7).html('-');
-            if (data['disk_idle'])
+                d['mem_idle'] = data['mem_idle'];
+            }
+            else {
+                obj.find("td").eq(7).html('-');
+                d['mem_idle'] = null;
+            }
+            if (data['disk_idle']) {
                 obj.find("td").eq(8).html(data['disk_idle'] + '%');
-            else obj.find("td").eq(8).html('-');
+                d['disk_idle'] = data['disk_idle'];
+            }
+            else {
+                obj.find("td").eq(8).html('-');
+                d['disk_idle'] = null;
+            }
+            row.data(d);
             return;
         }
 
@@ -1672,10 +1725,6 @@
             var resultTime = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
             return resultTime;
         }
-        function formatDate(date) {
-            var now = new Date(date);
-            dataFormat(now);
-        }
         // refresh status column css
         function refresh_status_column (e) {
             if (e == null) {
@@ -1714,8 +1763,7 @@
                     if(resp['status'] != 0){
                         console.log('Get role list error: ' + resp['message']);
                     }else {
-                        console.log(data);
-                        data = resp['message'];
+                        var data = resp['message'];
                         init_rolelist_table(data);
                     }
                 },

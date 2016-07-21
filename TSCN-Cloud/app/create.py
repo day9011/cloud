@@ -43,34 +43,33 @@ def create_tsRole():
             'env': data['env'],
         }
         print param
-        s, c = db.get("SELECT url FROM domain")
-        if s:
+        s, c = db.get("SELECT url FROM domain WHERE id = %s" % (data['domain']))
+        if s or not c:
             raise Exception('Get domain list fail: %s' % c)
-        for url in c:
-            url = url['url']
-            sqlstr = "INSERT INTO ts_role VALUES (NULL, '%s', %s, %s, %s, %s, '', %d, '%s', '%s', '%s')" % (
-                data['tsRoleName'], project_id, data['domain'], data['role_id'], data['seq'], 1, data['tag'], time, data['branch'])
-            print sqlstr
-            message = requests.post(url + '/tsRole/create', {'create_value': json.dumps(param)})
-            db.mod(sqlstr)
-            message = json.loads(message.text)
-            if isinstance(message, dict):
-                if message["status"]:
-                    sqlstr = "DELETE FROM ts_role WHERE name='%s'" % (data['tsRoleName'])
-                    db.mod(sqlstr)
-                    raise Exception(message['message'])
-                else:
-                    sqlstr = "UPDATE ts_role SET resource_id='%s' WHERE name='%s'" % (message['message'], data['tsRoleName'])
-                    logger.info(sqlstr)
-                    db.mod(sqlstr)
-                    sqlstr = "SELECT id FROM ts_role WHERE name='%s'" % (data['tsRoleName'])
-                    s, f = db.get(sqlstr)
-                    if s:
-                        raise Exception("query ts_role id error")
-                    ts_roleId = f[0]['id']
-                    ret['message'] = ts_roleId
+        url = c[0]['url']
+        sqlstr = "INSERT INTO ts_role VALUES (NULL, '%s', %s, %s, %s, %s, '', %d, '%s', '%s', '%s')" % (
+            data['tsRoleName'], project_id, data['domain'], data['role_id'], data['seq'], 1, data['tag'], time, data['branch'])
+        print sqlstr
+        message = requests.post(url + '/tsRole/create', {'create_value': json.dumps(param)})
+        db.mod(sqlstr)
+        message = json.loads(message.text)
+        if isinstance(message, dict):
+            if message["status"]:
+                sqlstr = "DELETE FROM ts_role WHERE name='%s'" % (data['tsRoleName'])
+                db.mod(sqlstr)
+                raise Exception(message['message'])
             else:
-                raise Exception("return value error")
+                sqlstr = "UPDATE ts_role SET resource_id='%s' WHERE name='%s'" % (message['message'], data['tsRoleName'])
+                logger.info(sqlstr)
+                db.mod(sqlstr)
+                sqlstr = "SELECT id FROM ts_role WHERE name='%s'" % (data['tsRoleName'])
+                s, f = db.get(sqlstr)
+                if s:
+                    raise Exception("query ts_role id error")
+                ts_roleId = f[0]['id']
+                ret['message'] = ts_roleId
+        else:
+            raise Exception("return value error")
     except Exception, e:
         try:
             sqlstr = "DELETE FROM ts_role WHERE name='%s'" % (data['tsRoleName'])

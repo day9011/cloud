@@ -25,32 +25,31 @@ def delete_tsRole():
     ret = {'status': 0, 'message': 'OK'}
     try:
         data = json.loads(request.get_data())
-        s, c = db.get("SELECT url FROM domain")
-        if s:
+        s, c = db.get("SELECT url FROM domain WHERE id=(select domain_id from ts_role where id=%s)" % (data['ts_roleId']))
+        if s or not c:
             raise Exception('Get domain list fail: %s' % c)
-        for url in c:
-            url = url['url']
-            sqlstr = "SELECT resource_id FROM ts_role WHERE id=%s" % (data['ts_roleId'])
-            s, f = db.get(sqlstr)
-            if s:
-                raise Exception("query containeid id error")
-            resource_id = f[0]['resource_id']
-            param = {
-                'tsResourceId': resource_id,
-            }
-            message = requests.post(url + '/tsRole/delete', param)
-            message = json.loads(message.text)
-            if isinstance(message, dict):
-                if message["status"]:
-                    raise Exception(message['message'])
-                else:
-                    sqlstr = "DELETE FROM ts_role WHERE id=%s" % (data['ts_roleId'])
-                    s, f = db.mod(sqlstr)
-                    if s:
-                        raise Exception("delete ts_role failed")
-                    ret['message'] = message['message']
+        url = c[0]['url']
+        sqlstr = "SELECT resource_id FROM ts_role WHERE id=%s" % (data['ts_roleId'])
+        s, f = db.get(sqlstr)
+        if s:
+            raise Exception("query containeid id error")
+        resource_id = f[0]['resource_id']
+        param = {
+            'tsResourceId': resource_id,
+        }
+        message = requests.post(url + '/tsRole/delete', param)
+        message = json.loads(message.text)
+        if isinstance(message, dict):
+            if message["status"]:
+                raise Exception(message['message'])
             else:
-                raise Exception("return value error")
+                sqlstr = "DELETE FROM ts_role WHERE id=%s" % (data['ts_roleId'])
+                s, f = db.mod(sqlstr)
+                if s:
+                    raise Exception("delete ts_role failed")
+                ret['message'] = message['message']
+        else:
+            raise Exception("return value error")
     except Exception, e:
         logger.error('Error: %s' % str(e))
         ret['status'] = 10

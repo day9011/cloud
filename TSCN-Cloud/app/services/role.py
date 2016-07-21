@@ -108,7 +108,7 @@ def TSRoleList(project_name, domain_id, role_id):
     else:
         project_id = c[0]['id']
 
-    _sql = """SELECT a.id,a.name,a.tag,a.resource_id, a.role_id FROM ts_role a WHERE a.project_id={0} AND a.domain_id={1}"""
+    _sql = """SELECT a.id,a.name,a.tag, a.branch, a.resource_id, a.role_id FROM ts_role a WHERE a.project_id={0} AND a.domain_id={1}"""
 
     if role_id != 0:
         _sql += " AND a.role_id={2}"
@@ -119,6 +119,7 @@ def TSRoleList(project_name, domain_id, role_id):
         for i in c:
             # get status from redis
             k = i['name']
+            tag = i['branch'] + '-' + i['tag']
             _status = cache.get(k)
             if _status:
                 _s = json.loads(_status)
@@ -144,7 +145,8 @@ def TSRoleList(project_name, domain_id, role_id):
                       'mem_idle': mem,
                       "disk_idle": disk,
                       "priv_ip": priv_ip,
-                      "pub_ip": pub_ip
+                      "pub_ip": pub_ip,
+                      "tag": tag,
                       })
 
     return s, c
