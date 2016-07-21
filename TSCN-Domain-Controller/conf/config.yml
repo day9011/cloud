@@ -1,0 +1,32 @@
+# redis
+redis_host: "127.0.0.1"
+redis_port: 6379
+redis_pass: "tops"
+redis_db: 9
+
+# mysql
+mysql_host: "127.0.0.1"
+mysql_port: 3306
+mysql_user: "tops"
+mysql_pass: "tops"
+mysql_db: "tops"
+
+# resource
+#compute_driver: FsDriver 
+compute_driver: Docker
+docker_api: "tcp://172.16.30.180:4000"
+check_thread: 5
+
+# role
+status_ttl: 90
+log_display_line: 20
+
+# monitor
+monitor_interval: 60
+
+# agent
+agent_port: 5005
+log_lines: 30
+
+
+

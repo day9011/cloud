@@ -1,0 +1,15 @@
+PyYAML
+kombu
+msgpack-python
+redis
+jenkinsapi
+flask
+flask-restful
+Flask-Login
+MySQL-python
+setproctitle
+gunicorn
+gevent
+Flask-SocketIO
+docker-py
+arrow
